@@ -5,8 +5,8 @@
 clear; clc; close all
 tic
 % Set x and t
-dt = 0.01;
-dx = 1e-3;
+dt = 0.005;
+dx = 2e-3;
 t_end = 100;
 
 %% Choose boolian
@@ -31,6 +31,26 @@ elseif D_choice == 3;
 elseif D_choice == 4;
     D = 6e-4;
 end
+% % % % %% Guii
+% % % % prompt = {'Enter time step:','Enter time end:', 'Enter x step', 'Enter Diffusion Constant' };
+% % % % dlg_title = 'Input';
+% % % % num_lines = 1;
+% % % % def = {num2str(dt), num2str(t_end), num2str(dx), num2str(D)};
+% % % % answer = inputdlg(prompt,dlg_title,num_lines,def);
+% % % % for i = 1:length(answer)
+% % % %     answer2(i) = str2num(answer{i});
+% % % % end
+% % % % dt = answer2(1); t_end = answer2(2); dx = answer2(3); D = answer2(4);
+% % % % 
+% % % % prompt = {'Choose BC 1= periodic, 2= no flux:','Choose 0= dimention 1= non-dimentionalised:', 'Choose changing beta 1 = yes:' };
+% % % % dlg_title = 'Choice';
+% % % % num_lines = 1;
+% % % % def = {num2str(BC), num2str(non_dim), num2str(beta_changing)};
+% % % % answer = inputdlg(prompt,dlg_title,num_lines,def);
+% % % % for i = 1:length(answer)
+% % % %     answer2(i) = str2num(answer{i});
+% % % % end
+% % % % BC = answer2(1); non_dim = answer2(2); beta_changing = answer2(3);
 
 %%
 x = 0:dx:1;
@@ -76,10 +96,15 @@ for k = 1:length(t)-1
     else
         error('no_dim is a boolian, 1 = yes use non dementioned  or 0 = use dementions')
     end
+%     % Calculate the rate of changes
+%     dZ_dt = (D/dx^2)*coeff_u*Z(:,k) + L_Z;
+%     dY_dt = L_Y;
+%     % Calculate the solution at that time
+%     Z_k1 = Z(:,k) + dt*dZ_dt;
+%     Y_k1 = Y(:,k) + dt*dY_dt;
     % Use Backward Euler Ax = b thus x = inv(A)*b
     b = -alp*(Z(:,k)+dt*L_Z);
-    Z_k1 = inv_A*b;
-    Y_k1 = Y(:,k) + dt*L_Y;
+    Z_k1 = 
     % Save it 
     Z(:,k+1) = Z_k1;
     Y(:,k+1) = Y_k1;
