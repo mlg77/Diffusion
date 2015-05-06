@@ -13,7 +13,7 @@ t_end = 100;
 % Choose Boundary condition
 BC = 2; % 1 = periodic, 2 =  no flux
 % Choose dimentionless
-non_dim = 0; % or 0 for no
+non_dim = 1; % or 0 for no
 % Choose beta
 beta_changing = 1;
 
@@ -73,6 +73,7 @@ for k = 1:length(t)-1
         [L_Z,L_Y] = calc_L_phy_ex(Z(:,k), Y(:,k), beta);
     elseif non_dim == 1
         [L_Z,L_Y] = calc_L_phy_ex2(Z(:,k), Y(:,k), beta);
+        K_R = 2;
     else
         error('no_dim is a boolian, 1 = yes use non dementioned  or 0 = use dementions')
     end
@@ -87,15 +88,27 @@ end
 end_time = toc;
 display(['Simulation Complete in ',num2str(end_time), ' seconds'])
 
+if non_dim == 1
+    Z = Z*K_R;
+    Y = Y*K_R;
+end
+
 figure(1)
-imagesc(t,flipud(x),flipud(Y))   
+imagesc(t,flipud(x),flipud(Y))  
+xlabel('Time, [s]')
+ylabel('Position, x')
+title('Z, Calcium Concentration in the Cytosol, [\muM]')
 colormap jet
 if beta_changing
     figure(2)
     plot(beta,x)
+    ylabel('Position, x')
+    xlabel('Beta, [-]')
     set(gca,'YDir','reverse');
 else
     figure(2)
     plot(t, Z(10,:), t, Y(10,:))
+    xlabel('Time, [s]')
+    ylabel('Calcium Concentration [\muM]')
     legend('Z', 'Y')
 end

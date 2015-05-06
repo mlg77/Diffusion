@@ -7,8 +7,8 @@ start_trial
 calc_L_phy_ex
 calc_L_phy_ex2
 
-Open start_trial and run using non_dim = 0 which will choose calc_L_phy_ex. Currently calculates goldbetter with diffusion.
+Open start_trial and run using non_dim = 1 which will choose calc_L_phy_ex2. Currently calculates goldbetter with diffusion.
 Needs editing to:
 DONE 1. Remove x10^-6
 DONE 2. Exchange forward to backward Euler
-3. Corect the non dimentional code: non_dim = 1 which will choose calc_L_phy_ex2.
+DONE 3. Corect the non dimentional code: non_dim = 1 which will choose calc_L_phy_ex2.

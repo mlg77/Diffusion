@@ -18,8 +18,8 @@ a5 = 0.45;
 
 
 % L equations in terms of Z and Y 
-LZ = @(Z, Y) a0 +a1*beta - a2*Z.^n./(a3+Z.^n) + (a4*Y.^m./(1 +Y.^m)).*(Z.^p./(a5+Z.^p)) + Y - a6*Z;
-LY = @(Z, Y) a2*Z.^n./(a3+Z.^n) - (a4*Y.^m./(1 + Y.^m)).*(Z.^p./(a5+Z.^p)) - Y;
+LZ = @(Z, Y) a0 +a1*beta - a2*Z.^n./(a3^n+Z.^n) + (a4*Y.^m./(1 +Y.^m)).*(Z.^p./(a5^p+Z.^p)) + Y - a6*Z;
+LY = @(Z, Y) a2*Z.^n./(a3^n+Z.^n) - (a4*Y.^m./(1 + Y.^m)).*(Z.^p./(a5^p+Z.^p)) - Y;
 
 L_Z = LZ(Z,Y);
 L_Y = LY(Z,Y);
