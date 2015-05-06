@@ -1,0 +1,13 @@
+Author: Michelle Goodman
+Date: 6/05/2015
+
+This Folder contains 4 files,
+
+PDE_solver_A1
+bcfun1
+icfun1
+pdefun1
+
+Open PDE_solver_A1. Currently tries to calculate goldbetter with diffusion using pdepe solver. This solver is not set up to work with changing x. 
+Found that this solver does not handle periodic boundry conditions
+This Branch was canceled and no longer used.
