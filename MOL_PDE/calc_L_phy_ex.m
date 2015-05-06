@@ -2,18 +2,18 @@ function [L_Z,L_Y] = calc_L_phy_ex(Z, Y, beta)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
-v0 = 1e-6;
-v1 = 7.3e-6;
-V_m2 = 65e-6;
-V_m3 = 500e-6;
+v0 = 1;
+v1 = 7.3;
+V_m2 = 65;
+V_m3 = 500;
 
 n = 2;
 m = n;
 p = 4;
 
-K_2 = 1e-6;
-K_R = 2e-6;
-K_a =  0.9e-6;
+K_2 = 1;
+K_R = 2;
+K_a =  0.9;
 
 k_f = 1;
 k = 10;
