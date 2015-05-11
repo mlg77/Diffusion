@@ -25,7 +25,7 @@ D_choice  = 3;
 if D_choice == 1
     D = 0;
 elseif D_choice == 2;
-    D = 6e-12;
+    D = 1e-6;
 elseif D_choice == 3;
     D = 6e-6;
 elseif D_choice == 4;
@@ -39,7 +39,7 @@ t = 0:dt:t_end;
 if beta_changing == 1
     beta = (0.5*(1+tanh((x-0.5)/0.5)))';
 elseif beta_changing == 0
-    beta = 0.6;%0.3;
+    beta = 0.3;
 else
     error('beta_changing is a boolian, 1 = yes use tanh function  or 0 = use constant value')
 end
@@ -80,6 +80,9 @@ for k = 1:length(t)-1
     % Use Backward Euler Ax = b thus x = inv(A)*b
     b = -alp*(Z(:,k)+dt*L_Z);
     Z_k1 = inv_A*b;
+    if D == 0
+        Z_k1 = Z(:,k) + dt*L_Z;
+    end
     Y_k1 = Y(:,k) + dt*L_Y;
     % Save it 
     Z(:,k+1) = Z_k1;
@@ -97,7 +100,7 @@ figure(1)
 imagesc(t,flipud(x),flipud(Y))  
 xlabel('Time, [s]')
 ylabel('Position, x')
-title('Z, Calcium Concentration in the Cytosol, [\muM]')
+%title('Z, Calcium Concentration in the Cytosol, [\muM]')
 colormap jet
 if beta_changing
     figure(2)
