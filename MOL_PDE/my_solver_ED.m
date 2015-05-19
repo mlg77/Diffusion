@@ -1,22 +1,21 @@
-% Start of my MOL code
+% Start of my MOL code including electro diffusion
 % Michelle Goodman
-% 29/04/2015
+% 19/05/2015
 
-% Test change
 clear; clc; close all
 tic
 h = waitbar(0);
-perc = 0.01;
+perc = 0.1;
 % Set x and t
 dt = 0.01;
-dx = 2e-3;
+dx = 5e-3;
 t_end = 100;
-%%
+%% 
 x = 0:dx:1;
 t = 0:dt:t_end;
 % Number of elements in x = M
 M = length(x); 
-
+N = length(t);
 
 %% Choose boolian
 % Choose Boundary condition
@@ -25,20 +24,6 @@ BC = 1; % 1 = periodic, 2 =  no flux
 non_dim = 0; % or 0 for no
 % Choose beta
 beta_changing = 1;
-
-fast = 0;
-
-if fast == 1;
-    A1_index = ones(M,1)*[1:2:2*M-1] + M*[0:4:4*M-1]'*ones(1,M);
-    A2_index = ones(M,1)*[2:2:2*M] + M*[0:4:4*M-1]'*ones(1,M);
-    A3_index = ones(M,1)*[1:2:2*M-1] + M*[2:4:4*M-1]'*ones(1,M);
-    A4_index = ones(M,1)*[2:2:2*M] + M*[2:4:4*M-1]'*ones(1,M);
-    A1_idx = reshape(A1_index.',1,[]);  A2_idx = reshape(A2_index.',1,[]);
-    A3_idx = reshape(A3_index.',1,[]);  A4_idx = reshape(A4_index.',1,[]);
-    
-    b1_idx = 1:2:2*M-1;
-    b2_idx = 2:2:2*M;
-end
 
 %% Inital Condition
 Z_0 = 1;
@@ -72,15 +57,6 @@ lil_z = 2;
 
 my_gamma = F/(R*T);
 
-%% Attempt 1
-% A3_const = A*F*D*lil_z*dt/(Cm*dx^2);
-% A4_const = A3_const*my_gamma;
-% A1_const = D*dt/dx^2;
-% A2_const = A1_const*my_gamma;
-
-% b1_const = D*my_gamma/(2*dx)^2;
-% b2_const = (lil_z*A*F/Cm)*b1_const;
-
 %% Attempt 2
 A3_const = F*D1*lil_z*dt/(Cm*dx^2);
 A4_const = A3_const*lil_z*my_gamma;
@@ -89,15 +65,6 @@ A2_const = A1_const*lil_z*my_gamma;
 
 b1_const = D*lil_z*my_gamma/(dx^2);
 b2_const = (lil_z^2*F*D1*my_gamma)/(Cm*dx^2);
-
-%% Attempt 3
-% A3_const = F*D*lil_z*dt/(dx^2);
-% A4_const = A3_const*lil_z*my_gamma;
-% A1_const = D*dt/dx^2;
-% A2_const = A1_const*lil_z*my_gamma;
-% 
-% b1_const = D*lil_z*my_gamma/(dx^2);
-% b2_const = (lil_z^2*F*D*my_gamma)/(dx^2);
 
 %% Set up inpulse
 if beta_changing == 1
@@ -110,6 +77,7 @@ end
 
 %% Start solver 
 % Set up IC as a vector length M
+Z = zeros(M, N); Y = zeros(M, N); V = zeros(M, N);
 Z(:,1) = ones(M,1) *Z_0;
 Y(:,1) = ones(M,1) * Y_0;
 V(:,1) = ones(M,1) * V_0;
@@ -137,11 +105,8 @@ else
     error('Boundry condition not specified, Choose 1; periodic or 2; No flux')
 end
 
-
-% find inverse of coeff_u
-
 %% loop for all time
-for k = 1:length(t)-1
+for k = 1:N-1
     % Call function to calculate L for Z and Y
     if non_dim == 0
         [L_Z,L_Y, L_V] = calc_L_ZYV(Z(:,k), Y(:,k), V(:,k), beta);
@@ -154,56 +119,29 @@ for k = 1:length(t)-1
    
     A2 = A2_missZ.*(Z(:,k)*ones(1,M));
     A4 = A4_missZ_missI.*(Z(:,k)*ones(1,M))+eye(M);
-    % A4 = A4_missZ_missI.*(Z(:,k)*ones(1,M))+eye(M)/Cm;
-    
+
     b5 = (A5*Z(:,k)).*(A5*V(:,k));
     
     b1 = Z(:,k) + dt*(b1_const*b5/4 + L_Z);
     b2 = V(:,k) + dt*(b2_const*b5/4 + (1/Cm)*L_V);
-    %b2 = V(:,k)/Cm + dt*(b2_const*b5/4 + L_V);
     b3 = Y(:,k) + dt*L_Y;
-    % Attempt to make faster to solve
-    Fast_A = zeros(1, (2*M)^2);
-    if fast == 1
-        Fast_A(A1_idx) = reshape(A1.',1,[]);
-        Fast_A(A2_idx) = reshape(A2.',1,[]);
-        Fast_A(A3_idx) = reshape(A3.',1,[]);
-        Fast_A(A4_idx) = reshape(A4.',1,[]);
-        Fast_A = (reshape(Fast_A, [2*M,2*M]))';
-        inv_A = inv(Fast_A);
-        
-        Fast_b(b1_idx) = b1;
-        Fast_b(b2_idx) = b2;
-        b = [Fast_b';b3];
-    else
-        % Use Backward Euler Ax = b thus x = inv(A)*b
-        b = [b1;b2;b3];
-        A_to = [A1, A2; A3, A4];
-        inv_A = inv(A_to);
-    end
+    % Use Backward Euler Ax = b thus x = inv(A)*b
+    b = [b1;b2;b3];
+    A_to = [A1, A2; A3, A4];
+    inv_A = inv(A_to);
     inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
 
     ZVY_k1 = inv_A*b;
     
     % Save it 
-    if fast == 1
-        Z(:,k+1) = ZVY_k1(1:2:2*M-1);
-        V(:,k+1) = ZVY_k1(2:2:2*M);
-    else
-        Z(:,k+1) = ZVY_k1(1:M);
-        V(:,k+1) = ZVY_k1(M+1:2*M);
-    end
+    Z(:,k+1) = ZVY_k1(1:M);
+    V(:,k+1) = ZVY_k1(M+1:2*M);
     Y(:,k+1) = ZVY_k1(2*M+1:3*M);
-%     hll = round(M/2);
-%     check = [Z(1,k+1),Z(hll,k+1),Z(M,k+1);V(1,k+1),V(hll,k+1),V(M,k+1);Y(1,k+1),Y(hll,k+1),Y(M,k+1)]
+
     if max(isnan(ZVY_k1)) == 1
         'Huston we have a problem'
         break
     end
-%     if min(Z(:,k+1)) < 0
-%         t(k)
-%         error('negative con')
-%     end
     if t(k) > perc * t_end
         close(h)
         end_time = toc;
@@ -221,7 +159,7 @@ if non_dim == 1
 end
 
 figure(1)
-imagesc(t,flipud(x),flipud(Y))  
+imagesc(t,flipud(x),flipud(Z))  
 xlabel('Time, [s]')
 ylabel('Position, x')
 %title('Z, Calcium Concentration in the Cytosol, [\muM]')

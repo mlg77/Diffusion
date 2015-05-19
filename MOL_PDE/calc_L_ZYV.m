@@ -28,12 +28,10 @@ m_inf = 0.5*tanh((V-V_v1)/V_v2);
 % L equations in terms of Z and Y 
 LZ = @(Z, Y) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z;
 LY = @(Z, Y) V_m2*Z.^n./(K_2^n+Z.^n) - (V_m3*Y.^m./(K_R^m + Y.^m)).*(Z.^p./(K_a^p+Z.^p)) - k_f*Y;
-%LV = @(Z, V) F*(v0-k*Z);
 LV = @(V) g_ca*m_inf.*(v_ca - V);
 
 L_Z = LZ(Z,Y);
 L_Y = LY(Z,Y);
-%L_V = LV(Z,V);
 L_V = LV(V);
 end
 
