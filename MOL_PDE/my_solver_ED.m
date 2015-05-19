@@ -2,6 +2,7 @@
 % Michelle Goodman
 % 29/04/2015
 
+% Test change
 clear; clc; close all
 tic
 h = waitbar(0);
