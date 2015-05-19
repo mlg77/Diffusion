@@ -15,11 +15,11 @@ BC = 2; % 1 = periodic, 2 =  no flux
 % Choose dimentionless
 non_dim = 1; % or 0 for no
 % Choose beta
-beta_changing = 1;
+beta_changing = 0;
 
 %% Inital Condition
-Z_0 = 0;
-Y_0 = 0;
+Z_0 = 1;
+Y_0 = 1;
 % Diffusion Constant
 D_choice  = 3;
 if D_choice == 1
@@ -29,12 +29,13 @@ elseif D_choice == 2;
 elseif D_choice == 3;
     D = 6e-6;
 elseif D_choice == 4;
-    D = 6e-4;
+    D = 200e-6;
 end
 
 %%
 x = 0:dx:1;
 t = 0:dt:t_end;
+
 %% Set up inpulse
 if beta_changing == 1
     beta = (0.5*(1+tanh((x-0.5)/0.5)))';
