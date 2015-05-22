@@ -8,7 +8,7 @@ h = waitbar(0);
 perc = 0.1;
 % Set x and t
 dt = 0.01;
-dx = 5e-3;
+dx = 2e-3;
 t_end = 100;
 %% 
 x = 0:dx:1;
@@ -26,12 +26,12 @@ non_dim = 0; % or 0 for no
 beta_changing = 1;
 
 %% Inital Condition
-Z_0 = 1;
+Z_0 = 0.3;
 Y_0 = 1;
-V_0 = 60;
+V_0 = -40;
 
 %% Diffusion Constant
-D_choice  = 4;
+D_choice  = 3;
 if D_choice == 1
     D = 0;
 elseif D_choice == 2;
@@ -39,11 +39,9 @@ elseif D_choice == 2;
 elseif D_choice == 3;
     D = 6e-6;
 elseif D_choice == 4;
-    D1 = 6e-12;
-    D =  6e-6;
+    D =  6e-12;
 end
 
-D = D1;
 if D == 0
     error('D = 0 use my_solver instead')
 end
@@ -54,17 +52,38 @@ T = 310;
 A = 1.9635e-5; 
 Cm = 1.9635e-14;
 lil_z = 2;
+q = 1.6e-19;
+k_B = 1.38e-20;
+meow = q*D/(k_B*T);
+my_alpha = 7.9976e12;
 
 my_gamma = F/(R*T);
+%% Attempt 1
+% A3_const = F*D*lil_z*dt/(Cm*dx^2);
+% A4_const = A3_const*lil_z*my_gamma;
+% A1_const = D*dt/dx^2;
+% A2_const = A1_const*lil_z*my_gamma;
+% 
+% b1_const = D*lil_z*my_gamma/(dx^2);
+% b2_const = (lil_z^2*F*D*my_gamma)/(Cm*dx^2);
 
 %% Attempt 2
-A3_const = F*D1*lil_z*dt/(Cm*dx^2);
+% A3_const = dt*lil_z*meow*R*T/(Cm*dx^2);
+% A4_const = dt*lil_z^2*F*meow/(Cm*dx^2);
+% A1_const = D*dt/dx^2;
+% A2_const = A1_const*lil_z*my_gamma;
+% 
+% b1_const = D*lil_z*my_gamma/(dx^2);
+% b2_const = (dt*lil_z^2*F*meow)/(Cm*dx^2);
+
+%% Attempt 3
+A3_const = D*dt/(my_alpha*Cm*dx^2);
 A4_const = A3_const*lil_z*my_gamma;
 A1_const = D*dt/dx^2;
 A2_const = A1_const*lil_z*my_gamma;
 
 b1_const = D*lil_z*my_gamma/(dx^2);
-b2_const = (lil_z^2*F*D1*my_gamma)/(Cm*dx^2);
+b2_const = (lil_z*D*my_gamma)/(my_alpha*Cm*dx^2);
 
 %% Set up inpulse
 if beta_changing == 1
@@ -177,3 +196,8 @@ else
     ylabel('Calcium Concentration [\muM]')
     legend('Z', 'Y', 'V')
 end
+
+figure(3)
+imagesc(t,flipud(x),flipud(V))  
+xlabel('Time, [s]')
+ylabel('Position, x')

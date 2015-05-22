@@ -20,18 +20,36 @@ k = 10;
 
 F = 9.6485e-2;
 g_ca = 1.57e-13;
-v_ca = 80;
+v_ca = -80;
 
 V_v1 = -22.5; V_v2 = 25;
-m_inf = 0.5*tanh((V-V_v1)/V_v2);
+m_inf = 0.5*(1+tanh((V-V_v1)/V_v2));
 
-% L equations in terms of Z and Y 
-LZ = @(Z, Y) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z;
-LY = @(Z, Y) V_m2*Z.^n./(K_2^n+Z.^n) - (V_m3*Y.^m./(K_R^m + Y.^m)).*(Z.^p./(K_a^p+Z.^p)) - k_f*Y;
-LV = @(V) g_ca*m_inf.*(v_ca - V);
+my_alpha = 7.9976e12;
+k_ca = 1.3675e2;
+B_T = 1e2;
+rho = (K_2 + Z).^2./((K_2+Z).^2 + K_2*B_T);
 
-L_Z = LZ(Z,Y);
-L_Y = LY(Z,Y);
-L_V = LV(V);
+%% Origional Equations 
+% LZ = @(Z, Y, V) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z ;
+% LY = @(Z, Y, V) V_m2*Z.^n./(K_2^n+Z.^n) - (V_m3*Y.^m./(K_R^m + Y.^m)).*(Z.^p./(K_a^p+Z.^p)) - k_f*Y;
+% LV = @(Z, V) -g_ca*m_inf.*(V - v_ca );
+
+%% Attempt to feed Z back into V 
+LZ = @(Z, Y, V) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z ;
+LY = @(Z, Y, V) V_m2*Z.^n./(K_2^n+Z.^n) - (V_m3*Y.^m./(K_R^m + Y.^m)).*(Z.^p./(K_a^p+Z.^p)) - k_f*Y;
+LV = @(Z, V)  + (1/my_alpha)*(v0 +v1*beta- V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z ) - g_ca*m_inf.*(V - v_ca);
+
+%% L equations in terms of Z and Y 
+% LZ = @(Z, Y, V) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z ;
+% % LZ = @(Z, Y, V) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z + (g_ca*m_inf.*(v_ca - V)*my_alpha ).*rho;
+% % LZ = @(Z, Y, V) v0 +v1*beta - V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z + (g_ca*m_inf.*(v_ca - V)*my_alpha -k_ca*Z).*rho;
+% LY = @(Z, Y, V) V_m2*Z.^n./(K_2^n+Z.^n) - (V_m3*Y.^m./(K_R^m + Y.^m)).*(Z.^p./(K_a^p+Z.^p)) - k_f*Y;
+% %LV = @(V) -g_ca*m_inf.*(V - v_ca );
+% LV = @(Z, V)  + (1/my_alpha)*(v0 +v1*beta- V_m2*Z.^n./(K_2^n+Z.^n) + (V_m3*Y.^m./(K_R^m +Y.^m)).*(Z.^p./(K_a^p+Z.^p)) + k_f*Y - k*Z ) - g_ca*m_inf.*(V - v_ca);
+
+L_Z = LZ(Z,Y, V);
+L_Y = LY(Z,Y, V);
+L_V = LV(Z, V);
 end
 

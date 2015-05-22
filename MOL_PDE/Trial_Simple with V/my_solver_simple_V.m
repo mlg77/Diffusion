@@ -7,19 +7,20 @@ tic
 % Set x and t
 dt = 0.01;
 dx = 1e-3;
-t_end = 100;
+t_end = 20;
 
 %% Choose boolian
 % Choose Boundary condition
 BC = 2; % 1 = periodic, 2 =  no flux
 % Choose dimentionless
-non_dim = 1; % or 0 for no
+non_dim = 0; % or 0 for no
 % Choose beta
-beta_changing = 0;
+beta_changing = 1;
 
 %% Inital Condition
 Z_0 = 1;
 Y_0 = 1;
+V_0 = -40;
 % Diffusion Constant
 D_choice  = 3;
 if D_choice == 1
@@ -49,8 +50,9 @@ end
 % Number of elements in x = M
 M = length(x); 
 % Set up IC as a vector length M
-Z(:,1) = ones(M,1) *Z_0;
+Z(:,1) = ones(M,1) * Z_0;
 Y(:,1) = ones(M,1) * Y_0;
+V(:,1) = ones(M,1) * V_0;
 
 % create coeff u_i Matrix
 alp = dx^2/(D*dt);
@@ -71,23 +73,23 @@ inv_A = inv(coeff_u);
 for k = 1:length(t)-1
     % Call function to calculate L for Z and Y
     if non_dim == 0
-        [L_Z,L_Y] = calc_L_phy_ex(Z(:,k), Y(:,k), beta);
-    elseif non_dim == 1
-        [L_Z,L_Y] = calc_L_phy_ex2(Z(:,k), Y(:,k), beta);
-        K_R = 2;
+        [L_Z,L_Y, L_V] = calc_L_phy_ex_simple_V(Z(:,k), Y(:,k), V(:,k), beta);
     else
-        error('no_dim is a boolian, 1 = yes use non dementioned  or 0 = use dementions')
+        error('Not in this one you dont')
     end
     % Use Backward Euler Ax = b thus x = inv(A)*b
     b = -alp*(Z(:,k)+dt*L_Z);
     Z_k1 = inv_A*b;
+    
     if D == 0
         Z_k1 = Z(:,k) + dt*L_Z;
     end
     Y_k1 = Y(:,k) + dt*L_Y;
+    V_k1 = V(:,k) + dt*L_V;
     % Save it 
     Z(:,k+1) = Z_k1;
     Y(:,k+1) = Y_k1;
+    V(:,k+1) = V_k1;
 end
 end_time = toc;
 display(['Simulation Complete in ',num2str(end_time), ' seconds'])
@@ -111,8 +113,12 @@ if beta_changing
     set(gca,'YDir','reverse');
 else
     figure(2)
-    plot(t, Z(10,:), t, Y(10,:))
+    plot(t, Z(10,:), t, Y(10,:), t, V(10,:))
     xlabel('Time, [s]')
     ylabel('Calcium Concentration [\muM]')
     legend('Z', 'Y')
 end
+figure(3)
+imagesc(t,flipud(x),flipud(V))  
+xlabel('Time, [s]')
+ylabel('Position, x')
