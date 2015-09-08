@@ -5,11 +5,11 @@
 clear; clc; close all
 tic
 h = waitbar(0);
-perc = 0.1;
+perc = 0.01;
 % Set x and t
 dt = 0.01;
 dx = 2e-3;
-t_end = 100;
+t_end = 50;
 %% 
 x = 0:dx:1;
 t = 0:dt:t_end;
@@ -46,44 +46,41 @@ if D == 0
     error('D = 0 use my_solver instead')
 end
 %% Initalise Electro Diffusion parameters
-F = 9.6485e-2; 
-R = 8.314e-3; 
+F = 9.6485e-5; 
+R = 8.314e-6; 
 T = 310;
-A = 1.9635e-5; 
+%A = 1.9635e-5; 
 Cm = 1.9635e-14;
 lil_z = 2;
-q = 1.6e-19;
 k_B = 1.38e-20;
-meow = q*D/(k_B*T);
 my_alpha = 7.9976e12;
-
 my_gamma = F/(R*T);
-%% Attempt 1
-% A3_const = F*D*lil_z*dt/(Cm*dx^2);
-% A4_const = A3_const*lil_z*my_gamma;
-% A1_const = D*dt/dx^2;
-% A2_const = A1_const*lil_z*my_gamma;
-% 
-% b1_const = D*lil_z*my_gamma/(dx^2);
-% b2_const = (lil_z^2*F*D*my_gamma)/(Cm*dx^2);
 
-%% Attempt 2
-% A3_const = dt*lil_z*meow*R*T/(Cm*dx^2);
-% A4_const = dt*lil_z^2*F*meow/(Cm*dx^2);
-% A1_const = D*dt/dx^2;
-% A2_const = A1_const*lil_z*my_gamma;
-% 
-% b1_const = D*lil_z*my_gamma/(dx^2);
-% b2_const = (dt*lil_z^2*F*meow)/(Cm*dx^2);
+% Volume
+radius_cell = 2.5e-4;
+length_cell = 6e-3;
+V_cell = pi*radius_cell^2*length_cell;
+fraction_cyto = 0.55;
+V_cyto = fraction_cyto*V_cell;
 
-%% Attempt 3
-A3_const = D*dt/(my_alpha*Cm*dx^2);
+%% Attempt 3 Same as below!!
+% A3_constc = D*dt/(my_alpha*Cm*dx^2);
+% A4_constc = A3_constc*lil_z*my_gamma;
+% A1_constc = D*dt/dx^2;
+% A2_constc = A1_constc*lil_z*my_gamma;
+% 
+% b1_constc = D*lil_z*my_gamma/(dx^2);
+% b2_constc = (lil_z*D*my_gamma)/(my_alpha*Cm*dx^2);
+
+%% Now after Moler correction!!!
+A3_const = D*dt*V_cyto*F*lil_z/(Cm*dx^2);
 A4_const = A3_const*lil_z*my_gamma;
 A1_const = D*dt/dx^2;
 A2_const = A1_const*lil_z*my_gamma;
 
 b1_const = D*lil_z*my_gamma/(dx^2);
-b2_const = (lil_z*D*my_gamma)/(my_alpha*Cm*dx^2);
+b2_const = D*V_cyto*F*lil_z^2*my_gamma/(Cm*dx^2);
+
 
 %% Set up inpulse
 if beta_changing == 1
@@ -201,3 +198,4 @@ figure(3)
 imagesc(t,flipud(x),flipud(V))  
 xlabel('Time, [s]')
 ylabel('Position, x')
+colormap jet
