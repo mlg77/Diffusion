@@ -5,9 +5,9 @@ function [  ] = My_plot( mystr, AllDir )
 %   Author Michelle Goodman
 %   Date 11/8/15
     close all
-    cd([AllDir{1}, AllDir{3}]);
+    cd([AllDir.ParentDir, AllDir.InitalDataDir]);
     load('Defult_data.mat')
-    cd([AllDir{1}, AllDir{4}]);
+    cd([AllDir.ParentDir ,AllDir.SaveDir])
     load('bounds_data.mat')
     figure(1)
     plot(mybeta, my_max, mybeta, my_min)

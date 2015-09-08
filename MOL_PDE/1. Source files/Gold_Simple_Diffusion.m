@@ -54,7 +54,7 @@ end
 A = [A1, A2; A3, A4];
 inv_A = inv(A);
 inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
-
+factor = 0.01;
 %% loop for all time
 for k = 1:N-1
     % Call function to calculate L for Z and Y
@@ -69,7 +69,7 @@ for k = 1:N-1
     
     %% Before you continue test that everything is ok by refeeding
     ZVY_k0 = inv_A*b;
-    for testing = 1:1:10
+    for testing = 1:1:20
         mid_Z = ZVY_k0(1:M);
         mid_V = ZVY_k0(M+1:2*M);
         mid_y = ZVY_k0(2*M+1:3*M);
@@ -80,16 +80,24 @@ for k = 1:N-1
         b3 = Y(:,k) + dt*L_Y;
         b = [b1;b2;b3];
         ZVY_k1 = inv_A*b;
-        if max(abs(ZVY_k1 - ZVY_k0)./ZVY_k1) < 1e-5
+        if max(abs((ZVY_k1 - ZVY_k0)./ZVY_k1)) < 1e-3
             break
         else
             ZVY_k0 = ZVY_k1;
         end
     end
+
+    if testing>19
+        error('Need more testing loops')
+    end
+    if k>factor*N
+        factor = factor+0.01
+    end
     %% Save it 
     Z(:,k+1) = ZVY_k1(1:M);
     V(:,k+1) = ZVY_k1(M+1:2*M);
     Y(:,k+1) = ZVY_k1(2*M+1:3*M);
+    
 end
 end
 

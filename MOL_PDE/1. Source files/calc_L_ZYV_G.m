@@ -26,12 +26,9 @@ v_2 = V_m2*Z.^n./(K_2^n + Z.^n);
 v_3 = V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p));
 
 %% From Goldbeter
-LZ =  v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z;
-LV =  F* V_cyto*(v_0 - k*Z + v_1*beta);
-LY =  v_2 - v_3 - k_f*Y;
+L_Z =  v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z;
+L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta);
+L_Y =  v_2 - v_3 - k_f*Y;
 
-L_Z = LZ;
-L_V = LV;
-L_Y = LY;
 end
 

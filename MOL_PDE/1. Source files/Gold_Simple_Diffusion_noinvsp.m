@@ -1,4 +1,4 @@
-function [ Z, V ] = Gold_Simple_Diffusion_noinv( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
+function [ Z, V ] = Gold_Simple_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -52,15 +52,17 @@ else
 end
 
 A = [A1, A2; A3, A4];
-% inv_A = inv(A);
-% inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
 FullA = A;
 FullA(2*M+1:3*M,2*M+1:3*M) = eye(M);
+sA = sparse(FullA);
+
+factor = 0.10;
+tic
 %% loop for all time
 for k = 1:N-1
     % Call function to calculate L for Z and Y
-    [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), beta);
-    sigma = [Z(:,k);V(:,k);Y(:,k)];
+    [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), mybeta);
+    mysigma = [Z(:,k);V(:,k);Y(:,k)];
     
     b1 = Z(:,k) + dt*(L_Z);
     b2 = V(:,k) + dt*((1/Cm)*L_V);
@@ -70,28 +72,36 @@ for k = 1:N-1
     b = [b1;b2;b3];
 
     % Solve no inv
-    ZVY_k0 = Solve_noinv( FullA, b, sigma );    
-        
+    ZVY_k0 = Solve_noinv( sA, b, mysigma );    
+    
     
     %% Before you continue test that everything is ok by refeeding
-    
+
     for testing = 1:1:20
         mid_Z = ZVY_k0(1:M);
         mid_V = ZVY_k0(M+1:2*M);
         mid_y = ZVY_k0(2*M+1:3*M);
-        sigma = [ ZVY_k0(1:M);ZVY_k0(M+1:2*M);ZVY_k0(2*M+1:3*M)];
+        mysigmamid = [ mid_Z; mid_V; mid_y];
 
-        [L_Z, L_V, L_Y] = calc_L_ZYV_G(mid_Z, mid_V, mid_y, beta);
+        [L_Z, L_V, L_Y] = calc_L_ZYV_G(mid_Z, mid_V, mid_y, mybeta);
         b1 = Z(:,k) + dt*(L_Z);
         b2 = V(:,k) + dt*((1/Cm)*L_V);
         b3 = Y(:,k) + dt*L_Y;
-        b = [b1;b2;b3];
-        ZVY_k1 = Solve_noinv( FullA, b, sigma ); 
-        if max(abs((ZVY_k1 - ZVY_k0)./ZVY_k1)) < 1e-10
+        bmid = [b1;b2;b3];
+        ZVY_k1 = Solve_noinv( sA, bmid, mysigmamid ); 
+        if max(abs((ZVY_k1 - ZVY_k0)./ZVY_k1)) < 1e-3
             break
         else
             ZVY_k0 = ZVY_k1;
         end
+    end
+    
+    if testing>19
+        error('Need more testing loops')
+    end
+    if k>factor*N
+        toc
+        factor = factor+0.1
     end
     %% Save it 
     Z(:,k+1) = ZVY_k1(1:M);
