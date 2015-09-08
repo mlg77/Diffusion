@@ -1,11 +1,13 @@
-function [  ] = My_plot( mystr )
+function [  ] = My_plot( mystr, AllDir )
 %Plots the results saved from the previous
 %   Plots up to the section specified as input
 %   No outputs only plots
 %   Author Michelle Goodman
 %   Date 11/8/15
     close all
-    load('inital_data.mat')
+    cd([AllDir{1}, AllDir{3}]);
+    load('Defult_data.mat')
+    cd([AllDir{1}, AllDir{4}]);
     load('bounds_data.mat')
     figure(1)
     plot(mybeta, my_max, mybeta, my_min)

@@ -4,6 +4,15 @@
 % Date 8/6/2015
 
 clear; clc; close all; 
+%% Where am I
+ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
+
+SourceDir = '1. Source files';
+InitalDataDir = '2. Inital Data';
+SaveDir = '4. Output files';
+
+AllDir{1} = ParentDir;     AllDir{2} = SourceDir; 
+AllDir{3} =InitalDataDir;  AllDir{4} = SaveDir;
 
 %% Ask what sections
 prompt = 'What sections? all/bounds/simple/SD/ED/plot_only: ';
@@ -15,11 +24,11 @@ while ismember(mystr,acceptable) == 0
     mystr = input(prompt,'s');
 end
 
-cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp\Pervious_saves')
 %% Do first section
+cd([ParentDir, InitalDataDir]);
 if strcmp(mystr, 'bounds') | strcmp(mystr, 'all')
-    load('inital_data.mat');
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp')
+    load('Defult_data.mat');
+    cd([ParentDir, SourceDir])
     for i = 1:length(mybeta)
         [ Z1, V1 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta(i), 0);
         my_max(i) = max(Z1(10, 1001:end));
@@ -38,48 +47,49 @@ if strcmp(mystr, 'bounds') | strcmp(mystr, 'all')
             break
         end
     end
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp\Pervious_saves')
+    cd([ParentDir ,SaveDir])
     save('bounds_data', '-regexp', '^(?!(mystr)$).')
 end
 %% Do Second Section
 if strcmp(mystr, 'simple') | strcmp(mystr, 'all')
     clearvars -except mystr
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp')
+    cd([ParentDir, SourceDir])
     Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
     dt = 0.002; t_end = 50; t = 0:dt:t_end;   N = length(t);
     dx = 1e-3; x = 0:dx:1;   M = length(x); 
     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
     [ Z2, V2 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, 1);
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp\Pervious_saves')
+    cd([ParentDir ,SaveDir])
     save('simple_data', '-regexp', '^(?!(mystr)$).')
 end
 %% Do first section
 if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     clearvars -except mystr
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp')
+    cd([ParentDir, SourceDir])
     Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
     D = 6e-6;
    dt = 0.002; t_end = 50; t = 0:dt:t_end;   N = length(t);
     dx = 1e-3; x = 0:dx:1;   M = length(x);  
-    mybeta = (0.5*(1+tanh((x-0.5)/0.3)))';
+    mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
     [ Z2b, V2b ] = Gold_Simple_Diffusion( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp\Pervious_saves')
+    cd([ParentDir ,SaveDir])
     save('SD_data', '-regexp', '^(?!(mystr)$).')
 end
 %% Do Second Section
 if strcmp(mystr, 'ED') | strcmp(mystr, 'all')
     clearvars -except mystr
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp')
+    cd([ParentDir, SourceDir])
     Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
     D = 6e-6;
     dt = 10e-3; t_end = 40; t = 0:dt:t_end;   N = length(t);
     dx = 5e-3; x = 0:dx:1;   M = length(x); 
     mybeta = (0.5*(1+tanh((x-0.5)/0.3)))';
     [ Z3, V3 ] = Gold_Electro_Diffusion( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-    cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp\Pervious_saves')
+    cd([ParentDir ,SaveDir])
     save('ED_data', '-regexp', '^(?!(mystr)$).')
 end
 
 %% Plot results
-My_plot( mystr )
-cd('C:\Users\mlg77\Local Documents\Git\Diffusion\MOL_PDE\5. Goldbeter_all_Simp')
+cd([ParentDir, SourceDir])
+My_plot( mystr , AllDir)
+cd([ParentDir, SourceDir])

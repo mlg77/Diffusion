@@ -1,4 +1,4 @@
-function [ Z, V ] = Gold_Simple_Diffusion( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
+function [ Z, V ] = Gold_Simple_Diffusion_noinv( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -52,13 +52,15 @@ else
 end
 
 A = [A1, A2; A3, A4];
-inv_A = inv(A);
-inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
-
+% inv_A = inv(A);
+% inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
+FullA = A;
+FullA(2*M+1:3*M,2*M+1:3*M) = eye(M);
 %% loop for all time
 for k = 1:N-1
     % Call function to calculate L for Z and Y
     [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), beta);
+    sigma = [Z(:,k);V(:,k);Y(:,k)];
     
     b1 = Z(:,k) + dt*(L_Z);
     b2 = V(:,k) + dt*((1/Cm)*L_V);
@@ -66,21 +68,26 @@ for k = 1:N-1
     
     % Use Backward Euler Ax = b thus x = inv(A)*b
     b = [b1;b2;b3];
+
+    % Solve no inv
+    ZVY_k0 = Solve_noinv( FullA, b, sigma );    
+        
     
     %% Before you continue test that everything is ok by refeeding
-    ZVY_k0 = inv_A*b;
-    for testing = 1:1:10
+    
+    for testing = 1:1:20
         mid_Z = ZVY_k0(1:M);
         mid_V = ZVY_k0(M+1:2*M);
         mid_y = ZVY_k0(2*M+1:3*M);
+        sigma = [ ZVY_k0(1:M);ZVY_k0(M+1:2*M);ZVY_k0(2*M+1:3*M)];
 
         [L_Z, L_V, L_Y] = calc_L_ZYV_G(mid_Z, mid_V, mid_y, beta);
         b1 = Z(:,k) + dt*(L_Z);
         b2 = V(:,k) + dt*((1/Cm)*L_V);
         b3 = Y(:,k) + dt*L_Y;
         b = [b1;b2;b3];
-        ZVY_k1 = inv_A*b;
-        if max(abs(ZVY_k1 - ZVY_k0)./ZVY_k1) < 1e-5
+        ZVY_k1 = Solve_noinv( FullA, b, sigma ); 
+        if max(abs((ZVY_k1 - ZVY_k0)./ZVY_k1)) < 1e-10
             break
         else
             ZVY_k0 = ZVY_k1;
@@ -91,6 +98,5 @@ for k = 1:N-1
     V(:,k+1) = ZVY_k1(M+1:2*M);
     Y(:,k+1) = ZVY_k1(2*M+1:3*M);
 end
-
 end
 
