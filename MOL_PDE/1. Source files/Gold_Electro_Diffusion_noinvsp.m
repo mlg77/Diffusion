@@ -112,7 +112,7 @@ for k = mid_start:N-1
     
     ZVY_k0 = Solve_noinv( sA, b, mysigma ); 
         %% Before you continue test that everything is ok by refeeding
-    for testing = 1:1:20
+    for testing = 1:1:30
         mid_Z = ZVY_k0(1:M);
         mid_V = ZVY_k0(M+1:2*M);
         mid_Y = ZVY_k0(2*M+1:3*M);
@@ -137,7 +137,7 @@ for k = mid_start:N-1
             ZVY_k0 = ZVY_k1;
         end
     end
-    if testing>19
+    if testing>29
         error('Need more testing loops')
     end
     

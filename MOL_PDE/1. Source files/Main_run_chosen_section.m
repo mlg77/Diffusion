@@ -80,8 +80,8 @@ if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
     Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
     D = 6e-6;
-    dt = 0.005; t_end = 50; t = 0:dt:t_end;   N = length(t);
-    dx = 1e-3; x = 0:dx:1;   M = length(x);  
+    dt = 2e-3; t_end = 100; t = 0:dt:t_end;   N = length(t);
+    dx = 1e-3; x = 0:dx:1;   M = length(x); 
     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
     if noinv
         [ Z2b, V2b ] = Gold_Simple_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
@@ -98,8 +98,8 @@ if strcmp(mystr, 'ED') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
     Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
     D = 6e-6;
-    dt = 0.005; t_end = 50; t = 0:dt:t_end;   N = length(t);
-    dx = 1e-3; x = 0:dx:1;   M = length(x);  
+    dt = 2e-3; t_end = 100; t = 0:dt:t_end;   N = length(t);
+    dx = 1e-3; x = 0:dx:1;   M = length(x); 
     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
     if noinv
         [ Z3, V3 ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
@@ -112,5 +112,5 @@ end
 
 %% Plot results
 cd([AllDir.ParentDir, AllDir.SourceDir])
-My_plot( mystr , AllDir)
+My_plot_report( mystr , AllDir)
 cd([AllDir.ParentDir, AllDir.SourceDir])
