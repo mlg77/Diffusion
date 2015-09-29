@@ -1,4 +1,4 @@
-function [ Z, V ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
+function [ Z, V, dX_dx, gZdV_dx ] = Gold_Electro_Diffusion_fluxes( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 %% Choose boolian
@@ -21,7 +21,7 @@ if reallycont == 0
     h = waitbar(0, 'Electro Diffusion');
     perc = 0.05;
 
-    BC = 2; % 1 = periodic, 2 =  no flux
+    BC = 1; % 1 = periodic, 2 =  no flux
     % Choose dimentionless
 
     F = 9.6485e-5; 
@@ -58,6 +58,8 @@ if reallycont == 0
     Z(:,1) = ones(M,1) *Z_0;
     V(:,1) = ones(M,1) * V_0;
     Y(:,1) = ones(M,1) * Y_0;
+    dX_dx = zeros(M-2,N);
+    gZdV_dx = zeros(M-2,N);
 
     % create coeff u_i Matrix
     AAA_21_matrix = (2*eye(M) - diag(ones(M-1,1),1) - diag(ones(M-1,1),-1));
@@ -98,6 +100,7 @@ for k = mid_start:N-1
     
     sA2 = sA2_missZ.*(Z(:,k)*ones(1,M));
     sA4 = sA4_missZ_missI.*(Z(:,k)*ones(1,M))+sparse(eye(M));
+
     b5 = (sA5*Z(:,k)/2).*(sA5*V(:,k)/2);
     
     b1 = Z(:,k) + dt*(b1_const*b5 + L_Z);
@@ -108,6 +111,7 @@ for k = mid_start:N-1
     b = [b1;b2;b3];
     sA_to = [sA1, sA2; sA3, sA4];
     sA = [sA_to, zeros(2*M, M); zeros(M, 2*M), sparse(eye(M))];
+    
     ZVY_k0 = Solve_noinv( sA, b, mysigma ); 
         %% Before you continue test that everything is ok by refeeding
     for testing = 1:1:30
@@ -143,6 +147,9 @@ for k = mid_start:N-1
     Z(:,k+1) = ZVY_k1(1:M);
     V(:,k+1) = ZVY_k1(M+1:2*M);
     Y(:,k+1) = ZVY_k1(2*M+1:3*M);
+    
+    dX_dx(:,k+1) = (Z(3:end,k+1)-Z(1:end-2,k+1))/(2*dx);
+    gZdV_dx(:,k+1) = my_gamma*Z(2:end-1,k+1).*(V(3:end,k+1)-V(1:end-2,k+1))/(2*dx); 
     %% Print timer 
     if t(k) > perc * t(end)
         close(h)

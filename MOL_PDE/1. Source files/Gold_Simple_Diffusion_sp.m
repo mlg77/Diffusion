@@ -1,4 +1,4 @@
-function [ Z, V ] = Gold_Simple_Diffusion( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
+function [ Z, V ] = Gold_Simple_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -54,8 +54,10 @@ end
 A = [A1, A2; A3, A4];
 inv_A = inv(A);
 inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
+inv_A = sparse(inv_A);
 factor = 0.01;
 %% loop for all time
+tic
 for k = 1:N-1
     % Call function to calculate L for Z and Y
     [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), beta);
@@ -92,6 +94,7 @@ for k = 1:N-1
     end
     if k>factor*N
         factor = factor+0.01
+        toc
     end
     %% Save it 
     Z(:,k+1) = ZVY_k1(1:M);

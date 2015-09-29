@@ -59,21 +59,6 @@ if strcmp(mystr, 'simple') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('simple_data', '-regexp', '^(?!(mystr)$).')
 end
-%% For Simple Diffusion and Electro Diffusion Do you want to use the noinv?
-if strcmp(mystr, 'ED') | strcmp(mystr, 'SD') | strcmp(mystr, 'all')
-    prompt = 'Do you want to use the noinv method of solving? yes/no: ';
-    responce = input(prompt,'s');
-    acceptable2 = [{'yes'}, {'no'}];
-    while ismember(responce,acceptable2) == 0
-        display('Choose again! Check correct captles')
-        responce = input(prompt,'s');
-    end
-    if strcmp(responce, 'yes')
-        noinv = 1;
-    else
-        noinv = 0;
-    end
-end
 %% Do Simple Diffusion section
 if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     clearvars -except mystr AllDir noinv
@@ -83,12 +68,7 @@ if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     dt = 2e-3; t_end = 100; t = 0:dt:t_end;   N = length(t);
     dx = 1e-3; x = 0:dx:1;   M = length(x); 
     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
-    if noinv
-        [ Z2b, V2b ] = Gold_Simple_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-        
-    else
-        [ Z2b, V2b ] = Gold_Simple_Diffusion( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-    end
+    [ Z2b, V2b ] = Gold_Simple_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('SD_data', '-regexp', '^(?!(mystr)$).')
 end
@@ -101,16 +81,12 @@ if strcmp(mystr, 'ED') | strcmp(mystr, 'all')
     dt = 2e-3; t_end = 100; t = 0:dt:t_end;   N = length(t);
     dx = 1e-3; x = 0:dx:1;   M = length(x); 
     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
-    if noinv
-        [ Z3, V3 ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-    else
-        [ Z3, V3 ] = Gold_Electro_Diffusion( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-    end
+    [ Z3, V3 ] = Gold_Electro_Diffusion_0dv( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('ED_data', '-regexp', '^(?!(mystr)$).')
 end
 
 %% Plot results
 cd([AllDir.ParentDir, AllDir.SourceDir])
-My_plot_report( mystr , AllDir)
+My_plot( mystr , AllDir)
 cd([AllDir.ParentDir, AllDir.SourceDir])

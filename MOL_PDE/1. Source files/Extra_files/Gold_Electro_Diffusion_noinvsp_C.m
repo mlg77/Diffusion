@@ -1,4 +1,4 @@
-function [ Z, V ] = Gold_Electro_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
+function [ Z, V ] = Gold_Electro_Diffusion_noinvsp_C( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D, PED)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 %% Choose boolian
@@ -11,7 +11,7 @@ if exist('mid_run_ED.mat') == 2
         load('mid_run_ED');
         ini_perc_com = perc;
         h = waitbar(perc, ['Continuing: ',num2str(perc*100), '% complete ETA: ', num2str(floor(length_left/60)), 'm ',num2str(round(rem(length_left, 60))) ' s']);
-        perc = perc+0.01;
+        perc = perc+0.05;
         tic
         mid_start = FYI_k;
     end
@@ -19,7 +19,7 @@ end
 if reallycont == 0
     tic
     h = waitbar(0, 'Electro Diffusion');
-    perc = 0.01;
+    perc = 0.05;
 
     BC = 1; % 1 = periodic, 2 =  no flux
     % Choose dimentionless
@@ -47,9 +47,9 @@ if reallycont == 0
     A3_const = D*dt*V_cyto*F*lil_z/(Cm*dx^2);
     A4_const = A3_const*d_lil_z*my_gamma;
     A1_const = D*dt/dx^2;
-    A2_const = A1_const*d_lil_z*my_gamma;
+    A2_const = PED*A1_const*d_lil_z*my_gamma;
 
-    b1_const = D*d_lil_z*my_gamma/(dx^2);
+    b1_const = PED*D*d_lil_z*my_gamma/(dx^2);
     b2_const = D*V_cyto*F*lil_z*d_lil_z*my_gamma/(Cm*dx^2);
 
     %% Start solver 
@@ -94,7 +94,8 @@ end
 for k = mid_start:N-1
     % Call function to calculate L for Z and Y
     [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), beta);
-   
+    mysigma = [Z(:,k);V(:,k);Y(:,k)];
+    
     sA2 = sA2_missZ.*(Z(:,k)*ones(1,M));
     sA4 = sA4_missZ_missI.*(Z(:,k)*ones(1,M))+sparse(eye(M));
 
@@ -107,15 +108,16 @@ for k = mid_start:N-1
     % Use Backward Euler Ax = b thus x = inv(A)*b
     b = [b1;b2;b3];
     sA_to = [sA1, sA2; sA3, sA4];
-    sinv_A = inv(sA_to);
-    sinv_A = [sinv_A, zeros(2*M, M); zeros(M, 2*M), sparse(eye(M))];
+    sA = [sA_to, zeros(2*M, M); zeros(M, 2*M), sparse(eye(M))];
+    
+    ZVY_k0 = Solve_noinv( sA, b, mysigma ); 
         %% Before you continue test that everything is ok by refeeding
-    ZVY_k0 = sinv_A*b;
-    for testing = 1:1:10
+    for testing = 1:1:30
         mid_Z = ZVY_k0(1:M);
         mid_V = ZVY_k0(M+1:2*M);
         mid_Y = ZVY_k0(2*M+1:3*M);
-
+        mysigma = [ mid_Z; mid_V; mid_Y];
+        
         sA2 = sA2_missZ.*(mid_Z*ones(1,M));
         sA4 = sA4_missZ_missI.*(mid_Z*ones(1,M))+sparse(eye(M));
         
@@ -126,15 +128,17 @@ for k = mid_start:N-1
         b3 = Y(:,k) + dt*L_Y;
         b = [b1;b2;b3];
         sA_to = [sA1, sA2; sA3, sA4];
-        sinv_A = inv(sA_to);
-        sinv_A = [sinv_A, zeros(2*M, M); zeros(M, 2*M), sparse(eye(M))];
-        ZVY_k1 = sinv_A*b;
-        
-        if max(abs(ZVY_k1 - ZVY_k0)./ZVY_k1) < 1e-5
+        sA = [sA_to, zeros(2*M, M); zeros(M, 2*M), sparse(eye(M))];
+        ZVY_k1 = Solve_noinv( sA, b, mysigma ); 
+                
+        if max(abs(ZVY_k1 - ZVY_k0)./ZVY_k1) < 1e-3
             break
         else
             ZVY_k0 = ZVY_k1;
         end
+    end
+    if testing>29
+        error('Need more testing loops')
     end
     
     %% Save it 
@@ -149,7 +153,7 @@ for k = mid_start:N-1
         FYI_k = k+1;
         save('mid_run_ED')
         h = waitbar(perc, [num2str(perc*100), '% complete ETA: ', num2str(floor(length_left/60)), 'm ',num2str(round(rem(length_left, 60))) ' s']);
-        perc = perc+0.01;
+        perc = perc+0.05;
     end
 end
 delete('mid_run_ED.mat')
