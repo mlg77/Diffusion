@@ -27,23 +27,40 @@ if produce == 1
 end
 cd([AllDir.ParentDir ,AllDir.SaveDir])
 figure(1)
+myfig1 = subplot(1,2,1);
 load('ED_data_Fluxes');
 imagesc(t,flipud(x(2:end-1)),dX_dx(2:end-1,:))
+axis([0,100,0,1])
 set(gca,'YDir','normal')
 xlabel('Time, [s]')
-ylabel('Position, x')
-title('dZ\_dx, Flux of Calcium Concentration in the Cytosol, [\muM m^{-1}]')
-colormap jet
+ylabel('Position, x [cm]')
+title('Fickian Flux of Calcium in the Cytosol, [\muMcm^{-1}]')
 colorbar
+cmap = jet(256);
+caxis(gca,[-550-2/256, 600]);
+placement = 120:140;
+cmap(placement,:)=ones(length(placement),3);
+colormap(myfig1, cmap)
+colorbar
+grid on
 
-figure(2)
+figure(1)
+myfig2 =  subplot(1,2,2);
+cmap = jet(256);
 imagesc(t,flipud(x(11:end-30)),gZdV_dx(11:end-30,:) )
+axis([0,100,0,1])
 set(gca,'YDir','normal')
 xlabel('Time, [s]')
-ylabel('Position, x')
-title('gZdV\_dx, Calcium Concentration in the Cytosol, [\muM m^{-1}]')
+ylabel('Position, x [cm]')
+title('Electro-Diffusive Flux in the Cytosol, [\muMcm^{-1}]')
+cmap = jet(256);
+caxis(gca,[-105-2/256, 85]);
+placement = 138:148;
+cmap(placement,:)=ones(length(placement),3);
+colormap(myfig2, cmap)
 colorbar
-colormap jet
+grid on
+
 
 
 %% Plot x(501)=0.5
@@ -76,9 +93,9 @@ for i = 2:length(t)-1
     end 
     grad_gZdV_dx = grad_gZdV_dx1;
     grad_dX_dx = grad_dX_dx1;
-    if t(i)>40
-        break
-    end
+%     if t(i)>40
+%         break
+%     end
 end
 
 
@@ -107,41 +124,54 @@ end
 
 %%
 figure(3)
-suptitle('x = 0.5')
-subplot(1,2,1)
+subplot(2,1,1)
     [AX,H1,H2] = plotyy(t,gZdV_dx(nno,:), t,dX_dx(nno,:));
-    legend('gZdV\_dx', 'dZ\_dx')
+    title('x = 0.5')
+    xlabel('Time, [s]')
+    ylabel('Flux, [\muMcm^{-1}]')
+    legend('Electro Diffusive Flux', 'Fickian Flux')
     grid on
-subplot(1,2,2)
+figure(4)
+subplot(2,1,1)
     hold on
     [AX,H1,H2] = plotyy(t,gZdV_dx(nno,:), t,dX_dx(nno,:));
-     set(AX(1),'YLim',[-5 10]); set(AX(2),'YLim',[275 425]);
-     set(AX(1),'xlim',[0 45]); set(AX(2),'xlim',[0 45]);
-    legend('gZdV\_dx', 'dZ\_dx')
-    grid on
+    legend('Electro Diffusive Flux', 'Fickian Flux')
+    title('x = 0.5')
+    xlabel('Time, [s]')
+    ylabel('Flux, [\muMcm^{-1}]')
     [AXX,H11,H22] = plotyy(R2(1:end-1,1), R2(1:end-1,2), R1(3:end-1,1), R1(3:end-1,2));
-    set(AXX(1),'YLim',[-5 10]); set(AXX(2),'YLim',[275 425]);
-    set(AX(1),'xlim',[0 45]); set(AX(2),'xlim',[0 45]);
+    set(AX(1),'yLim',[-50 10]); set(AX(2),'yLim',[-250 450]);
+    set(AX(1),'xlim',[10 12]); set(AX(2),'xlim',[10 12]);
+    set(AXX(1),'yLim',[-50 10]); set(AXX(2),'yLim',[-250 450]);
+    set(AXX(1),'xlim',[10 12]); set(AXX(2),'xlim',[10 12]);
+    set(AX(1),'YTick', [-60:20:10] )
+    set(AXX(2),'YTick', [-400:200:400] )
+    set(AX(2),'YTick', [-500:1000:500] )
+    set(AXX,{'ycolor'},{'b';'r'}) 
+    grid on
+    set(gca,'XTick',(2:0.15:4))
+%     legend('gZdV\_dx', 'dZ\_dx')
+    
     
     H11.Color = 'b'; H11.LineStyle = 'none'; H11.Marker = 'x';
     H22.Color = 'r'; H22.LineStyle = 'none'; H22.Marker = 'x';
 
 
 
-figure(4)
-suptitle('x = 0.5')
-subplot(1,2,1)
-    plot(R1(3:end-1,1), R1(3:end-1,3) ,R2(1:end-1,1), R2(1:end-1,3));
-    legend('Flux Z', 'Flux V')
-    title('Period changes over space')
-    xlabel('time')
-    ylabel('period ') % left y-axis
-subplot(1,2,2)
-    change_phase = R1(3:end,1)- R2(1:end,1);
+figure(5)
+subplot(2,1,1)
+    plot(R1(3:end-1,1), R1(3:end-1,3), '-xb' ,R2(1:end-1,1), R2(1:end-1,3), '-xr');
+    legend('Fickian Flux', 'Electro-Diffusive Flux')
+    title('x = 0.5')
+    xlabel('Time, [s]')
+    ylabel('Period, [s]') % left y-axis
+figure(6)
+subplot(2,1,1)
+    change_phase = R1(3:end,1)- R2(1:end-1,1);
     plot(R1(3:end,1), change_phase, '-x')
-    title('Phase Difference')
-    xlabel('time')
-    xlabel('\Delta time between two fluxes occolations')
+    title('x = 0.5')
+    xlabel('Time, [s]')
+    ylabel('\Delta time between two fluxes occolations')
     
 %% Plot x(265)=0.2640
 
@@ -204,45 +234,55 @@ for i = 1:length(Y2)
 end
 
 %%
-figure(5)
-suptitle('x = 0.2640')
-subplot(1,2,1)
+figure(3)
+subplot(2,1,2)
     [AX,H1,H2] = plotyy(t,gZdV_dx(265,:), t,dX_dx(265,:));
-    legend('gZdV\_dx', 'dZ\_dx')
+    legend('Electro Diffusive Flux', 'Fickian Flux')
+    title('x = 0.2640')
+    xlabel('Time, [s]')
+    ylabel('Flux, [\muMcm^{-1}]')
+%     legend('gZdV\_dx', 'dZ\_dx')
     grid on
-subplot(1,2,2)
+figure(4)
+subplot(2,1,2)
     hold on
     [AX,H1,H2] = plotyy(t,gZdV_dx(265,:), t,dX_dx(265,:));
-     set(AX(1),'YLim',[-5 10]); set(AX(2),'YLim',[275 600]);
-     set(AX(1),'xlim',[0 100]); set(AX(2),'xlim',[0 100]);
-    legend('gZdV\_dx', 'dZ\_dx')
+     set(AX(1),'YLim',[-100 10]); set(AX(2),'YLim',[-500 600]);
+     set(AX(1),'xlim',[10 14.5]); set(AX(2),'xlim',[10 14.5]);
+%      legend([H1,H2],'gZdV\_dx', 'dZ\_dx')
+    legend('Electro Diffusive Flux', 'Fickian Flux')
     grid on
     [AXX,H11,H22] = plotyy(R2(1:end-1,1), R2(1:end-1,2), R1(3:end-1,1), R1(3:end-1,2));
-    set(AXX(1),'YLim',[-5 10]); set(AXX(2),'YLim',[275 600]);
-    set(AX(1),'xlim',[0 100]); set(AX(2),'xlim',[0 100]);
-    
+    set(AXX(1),'YLim',[-100 10]); set(AXX(2),'YLim',[-500 600]);
+    set(AXX(1),'xlim',[10 14.5]); set(AXX(2),'xlim',[10 14.5]);
+    set(AX,{'ycolor'},{'b';'r'}) 
     H11.Color = 'b'; H11.LineStyle = 'none'; H11.Marker = 'x';
     H22.Color = 'r'; H22.LineStyle = 'none'; H22.Marker = 'x';
+    set(AXX(2),'YTick', [-500:200:600] )
+    set(AX(2),'YTick', [-500:1500:1500] )
+    title('x = 0.2640')
+    xlabel('Time, [s]')
+    set(get(AX(1),'Ylabel'),'String','Flux, [\muMcm^{-1}]') 
+%     set(get(AX(2),'Ylabel'),'String','Calcium Concentration, [\muM]') 
 
 
-
-figure(6)
-suptitle('x = 0.2640')
-subplot(1,2,1)
+figure(5)
+subplot(2,1,2)
     plot(R1(1:end-1,1), R1(1:end-1,3), '-xb' ,R2(1:end-1,1), R2(1:end-1,3),'-xr');
-    legend('Flux Z', 'Flux V')
-    title('Period changes over space')
-    xlabel('time')
-    ylabel('period ') % left y-axis
+    legend('Fickian Flux', 'Electro-Diffusive Flux')
+    title('x = 0.2640')
+    xlabel('Time, [s]')
+    ylabel('Period, [s]') % left y-axis
     x1 = 23.74;
-    y1 = 5.002;
-    str1 = '\leftarrow Ignore these points (jump in plot)';
+    y1 = 4.5;
+    str1 = '\leftarrow Ignore this points (jump in plot)';
     text(x1,y1,str1)
-subplot(1,2,2)
+figure(6)
+subplot(2,1,2)
     change_phase = R1(1:end,1)- R2(1:end,1);
     plot(R1(1:end,1), change_phase, '-x')
-    title('Phase Difference')
-    xlabel('time')
+    title('x = 0.2640')
+    xlabel('Time, [s]')
     ylabel('\Delta time between two fluxes occolations')
 
 
@@ -254,12 +294,14 @@ mybeta = intrim;
 list_1 = find(mybeta>bt_point); list_2 = find(mybeta>top_point);
 top_pt = x(list_1(1)) ; bt_pt = x(list_2(1));
 figure(1)
+subplot(1,2,1)
 hold on
 plot([0,it_end], [top_pt, top_pt], 'k','LineWidth',2)
 plot([0,it_end], [bt_pt, bt_pt],  'k','LineWidth',2)
 hold off
 
-figure(2)
+figure(1)
+subplot(1,2,2)
 hold on
 plot([0,it_end], [top_pt, top_pt], 'k','LineWidth',2)
 plot([0,it_end], [bt_pt, bt_pt],  'k','LineWidth',2)

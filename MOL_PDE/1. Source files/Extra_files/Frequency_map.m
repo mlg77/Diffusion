@@ -119,6 +119,9 @@ for i = 1:length(the_i)
         end
     end
 end
+[rr, cc] =size(myrecordV.f2);
+
+myrecordV.f2 = [myrecordV.f2; zeros(length(x)-rr, cc)];
 figure(2)
 h = imagesc(t(1:49963),flipud(x(2:end-1)), myrecordV.f2);     
 set(gca,'YDir','normal') 

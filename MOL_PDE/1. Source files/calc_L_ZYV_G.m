@@ -1,6 +1,8 @@
 function [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z, V, Y, beta)
-%UNTITLED6 Summary of this function goes here
-%   Detailed explanation goes here
+%Goldbeter Equations Set
+%   Calculates the non linear concentration rates for the calciun in the
+%   cytocol, Z, the calcium in the stores, and the membrain potential.
+%   where beta is a spatially varying variable 
 
 K_r = 2;
 K_2 = 1;

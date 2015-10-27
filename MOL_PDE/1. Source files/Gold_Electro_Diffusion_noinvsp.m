@@ -40,17 +40,15 @@ if reallycont == 0
     fraction_cyto = 0.55;
     V_cyto = fraction_cyto*V_cell;
 
-    d_lil_z = lil_z;
-    d_lil_z = 1;
 
     %% Now after Moler correction!!!
     A3_const = D*dt*V_cyto*F*lil_z/(Cm*dx^2);
-    A4_const = A3_const*d_lil_z*my_gamma;
+    A4_const = A3_const*lil_z*my_gamma;
     A1_const = D*dt/dx^2;
-    A2_const = A1_const*d_lil_z*my_gamma;
+    A2_const = A1_const*lil_z*my_gamma;
 
-    b1_const = D*d_lil_z*my_gamma/(dx^2);
-    b2_const = D*V_cyto*F*lil_z*d_lil_z*my_gamma/(Cm*dx^2);
+    b1_const = D*lil_z*my_gamma/(dx^2);
+    b2_const = D*V_cyto*F*lil_z*lil_z*my_gamma/(Cm*dx^2);
 
     %% Start solver 
     % Set up IC as a vector length M
