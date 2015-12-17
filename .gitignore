@@ -1,3 +1,9 @@
+# Output files from matlab
+4. Output files
+
+# VTU files
+*.vtu
+
 # Matlab auto save files
 *.asv
 
