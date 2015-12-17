@@ -129,7 +129,14 @@ for k = mid_start:N-1
                 
         if max(abs(ZVY_k1 - ZVY_k0)./ZVY_k1) < 1e-3
             break
-        else
+%         elseif max(abs(ZVY_k1))>80
+%             problem_var = find(abs(ZVY_k1) > 80);
+%             r2_considered = ZVY_k1;
+%             r2_considered(problem_var) = 0; 
+%             if  max(abs(r2_considered)) < 1e-3
+%                  break
+%             end
+        else            
             ZVY_k0 = ZVY_k1;
         end
     end

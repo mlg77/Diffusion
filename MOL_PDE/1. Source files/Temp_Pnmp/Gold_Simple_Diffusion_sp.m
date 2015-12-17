@@ -71,7 +71,7 @@ for k = 1:N-1
     
     %% Before you continue test that everything is ok by refeeding
     ZVY_k0 = inv_A*b;
-    for testing = 1:1:120
+    for testing = 1:1:300
         mid_Z = ZVY_k0(1:M);
         mid_V = ZVY_k0(M+1:2*M);
         mid_y = ZVY_k0(2*M+1:3*M);
@@ -88,7 +88,7 @@ for k = 1:N-1
             ZVY_k0 = ZVY_k1;
         end
     end
-    if testing>119
+    if testing>299
         error('Need more testing loops')
     end
     if k>factor*N

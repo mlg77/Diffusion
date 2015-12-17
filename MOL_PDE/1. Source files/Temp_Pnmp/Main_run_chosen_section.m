@@ -7,7 +7,7 @@ clear; clc; close all;
 %% Where am I
 AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
 
-AllDir.SourceDir = '1. Source files';
+AllDir.SourceDir = '1. Source files\Temp_Pnmp';
 AllDir.InitalDataDir = '2. Inital Data';
 AllDir.SaveDir = '4. Output files';
 
@@ -26,10 +26,15 @@ cd([AllDir.ParentDir, AllDir.InitalDataDir]);
 if strcmp(mystr, 'bounds') | strcmp(mystr, 'all')
     load('Defult_data.mat');
     cd([AllDir.ParentDir, AllDir.SourceDir])
+    Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
+    t = 0.005; t_end = 40; t = 0:dt:t_end;   N = length(t);
+    dx = 0.2;  x = 0:dx:1;   M = length(x); 
+    mybeta = 0:0.01:1;
     for i = 1:length(mybeta)
         [ Z1, V1 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta(i), 0);
-        my_max(i) = max(Z1(10, 1001:end));
-        my_min(i) = min(Z1(10, 1001:end));
+%         plot(t, Z1); title(num2str(mybeta(i)));
+        my_max(i) = max(Z1(3, round(0.375*N):end));
+        my_min(i) = min(Z1(3, round(0.375*N):end));
     end
     bt_point_found = 1;
     for k = 1:length(my_max)
@@ -52,13 +57,13 @@ end
 
 Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
 D = 6e-6;
-dt = 2e-3; t_end = 44;
-dx = 1e-3;  
+dt = 1e-3; t_end = 50;
+dx = 2e-3;  
 
 t = 0:dt:t_end;   N = length(t);
 x = 0:dx:1;   M = length(x); 
 
-mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
+% mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 mybeta = linspace(0,1,M)';
 % mybeta = [0.2*ones(1, round(0.2*M)),linspace(0.3,0.5,round(0.6*M)),0.2*ones(1, round(0.2*M))]';
 
@@ -87,6 +92,7 @@ if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('SD_data', '-regexp', '^(?!(mystr)$).')
 end
+% mystr = 'plot_only';
 %% Do Second Section
 if strcmp(mystr, 'ED') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])

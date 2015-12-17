@@ -1,4 +1,4 @@
-function [ Z] = SD_toy( dt, dx, x, t, M, N, Z_0, V_0, D, B, al)
+function [ Z] = SD_toy( dt, dx, x, t, M, N, Z_0, V_0, D, B)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -43,28 +43,14 @@ inv_A = sparse(inv_A);
 % Loop through time
 for k = 1:N-1
     % Call function to calculate L for Z and Y
-    [L_Z, L_V] = calc_L_ZYV_toy(B, Z(:,k), V(:,k), al);
-    b = [Z(:,k) + dt*(L_Z);     V(:,k) + dt*(L_V)];
-    ResMid = inv_A*b;
+    [L_Z, L_V] = calc_L_ZYV_toy(B, Z(:,k), V(:,k));
     
+    b = [Z(:,k) + dt*(L_Z);V(:,k) + dt*(L_V)];
     
     %% Before you continue test that everything is ok by refeeding
-    
-    %% Refeed
-    for j =  1:5
-        Zmid = ResMid(1:M);
-        Vmid = ResMid(M+1:end);
-        [L_Z, L_V] = calc_L_ZYV_toy(B, Zmid, Vmid, al);
-        b = [Z(:,k) + dt*(L_Z);     V(:,k) + dt*(L_V)];
-        ResNew = inv_A*b;
-        
-        if abs(ResMid-ResNew)./ResMid < 0.01*ResMid
-            break
-        end
-        ResMid = ResNew;
-    end
-    Z(:,k+1) =  ResNew(1:M);
-    V(:,k+1) =  ResNew(M+1:end);
+    res = inv_A*b;
+    Z(:,k+1) = res(1:M);
+    V(:,k+1) = res(M+1:end);
 end
 end
 

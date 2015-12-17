@@ -95,30 +95,5 @@ function [  ] = My_plot( mystr, AllDir )
         plot([0,t_end], [top_pt, top_pt], 'k','LineWidth',2)
         plot([0,t_end], [bt_pt, bt_pt],  'k','LineWidth',2)
 
-       %% View Grid
-%     figure(5)
-%     subplot(1,2,1)
-%         imagesc(t,flipud(x),Z3)
-%         set(gca,'YDir','normal')
-%         xlabel('Time, [s]')
-%         ylabel('Position, x')
-%         title('Z, Calcium Concentration in the Cytosol, [\muM]')
-%         colormap jet
-%         hold on
-%         plot([0,t_end], [top_pt, top_pt], 'k','LineWidth',2)
-%         plot([0,t_end], [bt_pt, bt_pt],  'k','LineWidth',2)
-%     subplot(1,2,2)
-%         h = surf(t,x,Z3);
-%         xlabel('Time, [s]')
-%         ylabel('Position, x')
-%         title('Z, Calcium Concentration in the Cytosol, [\muM]')
-%         colormap jet
-%         view(2)
-%         figure_handle = figure(5);
-%         all_ha = findobj( figure_handle, 'type', 'axes', 'tag', '' );
-%         linkaxes( all_ha, 'xy');
-%         set(h, 'edgecolor','k');
-%         axis([4.5,7,0.38,0.43])
-
 end
 
