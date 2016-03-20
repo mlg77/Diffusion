@@ -149,7 +149,7 @@ subplot(2,1,1)
     set(AX(2),'YTick', [-500:1000:500] )
     set(AXX,{'ycolor'},{'b';'r'}) 
     grid on
-    set(gca,'XTick',(2:0.15:4))
+%     set(gca,'XTick',(2:0.15:4))
 %     legend('gZdV\_dx', 'dZ\_dx')
     
     

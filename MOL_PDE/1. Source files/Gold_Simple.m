@@ -16,7 +16,7 @@ Y(:,1) = ones(M,1) * Y_0;
 %% loop for all time
 for k = 1:N-1
     % Call function to calculate L for Z and Y
-    [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), beta);
+    [L_Z, L_V, L_Y] = calc_L_ZYV(Z(:,k), V(:,k), Y(:,k), beta);
     
     Z(:,k+1) = Z(:,k) + dt*(L_Z);
     V(:,k+1) = V(:,k)+ dt*(L_V/Cm);
@@ -29,7 +29,7 @@ for k = 1:N-1
             mid_V = ZVY_k0(M+1:2*M);
             mid_y = ZVY_k0(2*M+1:3*M);
 
-            [L_Z, L_V, L_Y] = calc_L_ZYV_G(mid_Z, mid_V, mid_y, beta);
+            [L_Z, L_V, L_Y] = calc_L_ZYV(mid_Z, mid_V, mid_y, beta);
             b1 = Z(:,k) + dt*(L_Z);
             b2 = V(:,k) + dt*((1/Cm)*L_V);
             b3 = Y(:,k) + dt*L_Y;

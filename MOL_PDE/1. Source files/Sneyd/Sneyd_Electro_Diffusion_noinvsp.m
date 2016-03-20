@@ -1,4 +1,4 @@
-function [ Z, V ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
+function [ Z, V ] = Sneyd_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 %% Choose boolian

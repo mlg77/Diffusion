@@ -26,12 +26,14 @@ function [  ] = My_plot_report( mystr, AllDir )
     load('simple_data.mat')
     
     figure(2)
-%         v_1 = mybeta*16-33;
-        plot(mybeta,flipud(x))
-%         plot(v_1,x)
+        v_1 = mybeta*16-33;
+%         plot(mybeta,flipud(x))
+%         plot(v_1,flipud(x))
+        plot(v_1,x)
+        set(gca,'YDir','reverse')
         ylabel('Position, x')
         xlabel('beta, [-]')
-%         xlabel('v_1')
+        xlabel('v_1')
         title('Changing Beta Ploted over Space Showing Unstable Region')
         hold on
         list_1 = find(mybeta>bt_point); list_2 = find(mybeta>top_point);
@@ -40,14 +42,15 @@ function [  ] = My_plot_report( mystr, AllDir )
         else
             top_pt = x(list_1(1)) ; bt_pt = x(list_2(1));
         end
-        plot([bt_point, bt_point, 0], [0, top_pt, top_pt], 'k','LineWidth',2)
-        plot([top_point, top_point, 0], [0, bt_pt, bt_pt],  'k','LineWidth',2)
+        plot([bt_point*16-33, bt_point*16-33, -35], [1, top_pt, top_pt], 'k','LineWidth',2)
+        plot([top_point*16-33, top_point*16-33, -35], [1, bt_pt, bt_pt],  'k','LineWidth',2)
     figure(3)
-        imagesc(t,flipud(x),Z2)
-        set(gca,'YDir','normal')
+        imagesc(t,flipud(x),V2)
+%         imagesc(t,flipud(x),Z2)
+        set(gca,'YDir','reverse')
         xlabel('Time, [s]')
         ylabel('Position, x')
-        title('Calcium [Ca^2^+] Concentration in the Cytosol zero diffusion, [\muM]')
+%         title('Calcium [Ca^2^+] Concentration in the Cytosol zero diffusion, [\muM]')
         colormap jet
         hold on
         plot([0,t_end], [top_pt, top_pt], 'k','LineWidth',2)
@@ -60,11 +63,11 @@ function [  ] = My_plot_report( mystr, AllDir )
     
     load('SD_data.mat')
     figure(4)
-        imagesc(t,flipud(x),Z2b)
-        set(gca,'YDir','normal')
+        imagesc(t,flipud(x),V2b)
+        set(gca,'YDir','reverse')
         xlabel('Time, [s]')
         ylabel('Position, x')
-        title('Calcium [Ca^2^+] Concentration in the Cytosol with Simple Diffusion (6x10^-^6), [\muM]')
+%         title('Calcium [Ca^2^+] Concentration in the Cytosol with Simple Diffusion (6x10^-^6), [\muM]')
         colormap jet
         colorbar
         hold on
@@ -78,11 +81,11 @@ function [  ] = My_plot_report( mystr, AllDir )
     load('ED_data.mat')
     
     figure(5)
-        imagesc(t,flipud(x),Z3)
-        set(gca,'YDir','normal') 
+        imagesc(t,flipud(x),V3)
+        set(gca,'YDir','reverse') 
         xlabel('Time, [s]')
         ylabel('Position, x')
-        title('Calcium [Ca^2^+] Concentration in the Cytosol with Electro-Diffusion (6x10^-^6), [\muM]')
+%         title('Calcium [Ca^2^+] Concentration in the Cytosol with Electro-Diffusion (6x10^-^6), [\muM]')
         colorbar
         colormap jet
         hold on

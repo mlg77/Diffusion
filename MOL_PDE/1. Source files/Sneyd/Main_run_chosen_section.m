@@ -7,9 +7,8 @@ clear; clc; close all;
 %% Where am I
 AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
 
-AllDir.SourceDir = '1. Source files';
-AllDir.InitalDataDir = '2. Inital Data';
-AllDir.SaveDir = '4. Output files\Figurers_Tim\Data_For_Tim_Plots';
+AllDir.SourceDir = '1. Source files\Sneyd';
+AllDir.SaveDir = '4. Output files';
 
 %% Ask what sections
 prompt = 'What sections? all/bounds/simple/SD/ED/plot_only: ';
@@ -20,32 +19,34 @@ while ismember(mystr,acceptable) == 0
     display('Choose again! Check correct captles')
     mystr = input(prompt,'s');
 end
+%% Inital Data
+dt = 0.005; dx = 1e-3; t_end = 50;
+t = 0:dt:t_end; x = 0:dx:1; M = length(x); N = length(t);
+bperc = 1;
+mybeta = (0:0.01:1)*bperc;
+CCtPH_0 = [0.2, 0.5, 1, 0.5];
+
 
 %% Do Bounds Section Produce Biforcation
-cd([AllDir.ParentDir, AllDir.InitalDataDir]);
 if strcmp(mystr, 'bounds') | strcmp(mystr, 'all')
-    load('Defult_data.mat');
-    cd([AllDir.ParentDir, AllDir.SourceDir])
-    
-    dt = 0.005; t_end = 20;
+   dx = 0.2; x = 0:dx:1; M = length(x);
+    dt = 0.005; t_end = 500;
     t = 0:dt:t_end;   N = length(t);
     for i = 1:length(mybeta)
-        [ Z1, V1 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta(i), 0);
-        my_max(i) = max(Z1(10, 1001:end));
-        my_min(i) = min(Z1(10, 1001:end));
-%         plot(V1(10, 1001:end))
-%         pause(0.1)
-%         my_max(i) = max(V1(10, 3001:end));
-%         my_min(i) = min(V1(10, 1001:end));
+        [ C.bounds, Ct.bounds, P.bounds, H.bounds ] = Sneyd_Simple( dt, dx, x, t, M, N, CCtPH_0, mybeta(i), 0);
+        mrange = 20000;
+        my_max(i) = max(C.bounds(2, mrange:end));
+        my_min(i) = min(C.bounds(2, mrange:end));
+%         pause(0.1); figure(10); plot(t(mrange:end), C.bounds(2, mrange:end));
     end
     bt_point_found = 1;
     for k = 1:length(my_max)
-        if abs(my_max(k) - my_min(k)) < 50 & bt_point_found % 0.007
+        if abs(my_max(k) - my_min(k)) < 0.50 & bt_point_found % 0.007
             bt_point = mybeta(k);
             x_bt_pt = my_max(k);
         elseif bt_point_found
             bt_point_found = 0;
-        elseif abs(my_max(k) - my_min(k)) < 50%0.01
+        elseif abs(my_max(k) - my_min(k)) < 0.50%0.01
             top_point = mybeta(k);
             x_top_pt = my_max(k);
             break
@@ -57,16 +58,12 @@ end
 
 %% They all have the same IC
 
-Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
-D = 6e-6;
-dt = 2e-3; t_end = 44;
-dx = 1e-3;  
-
-t = 0:dt:t_end;   N = length(t);
-x = 0:dx:1;   M = length(x); 
-
-mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
-mybeta = linspace(0,1,M)';
+dt = 0.005; dx = 1e-3; t_end = 300;
+t = 0:dt:t_end; x = 0:dx:1; M = length(x); N = length(t);
+mybeta = (0.5*(1+tanh((x-0.5)/0.5)))'*bperc;
+% mybeta = linspace(0,1,M)';
+CCtPH_0 = [0.2, 0.5, 0.5, 0.5];
+D =2;%00e-6;
 % mybeta = [0.2*ones(1, round(0.2*M)),linspace(0.3,0.5,round(0.6*M)),0.2*ones(1, round(0.2*M))]';
 
 % Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
@@ -83,14 +80,14 @@ mybeta = linspace(0,1,M)';
 %% Do Second Section
 if strcmp(mystr, 'simple') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
-    [ Z2, V2 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, 1);
+    [ C.simple, Ct.simple, P.simple, H.simple ] = Sneyd_Simple( dt, dx, x, t, M, N, CCtPH_0, mybeta, 0);
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('simple_data', '-regexp', '^(?!(mystr)$).')
 end
 %% Do Simple Diffusion section
 if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
-    [ Z2b, V2b ] = Gold_Simple_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
+    [ C.SD, Ct.SD, P.SD, H.SD ] = Sneyd_Simple_Diffusion_sp( dt, dx, x, t, M, N, CCtPH_0, mybeta, D);
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('SD_data', '-regexp', '^(?!(mystr)$).')
 end

@@ -50,7 +50,11 @@ elseif BC == 2
 else
     error('Boundry condition not specified, Choose 1; periodic or 2; No flux')
 end
-
+% %% Edit ermentrout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A2 = A2*0;
+% A3 = A3*0;
+% A4 = A3_const*AAA_21_matrix + eye(M);
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 A = [A1, A2; A3, A4];
 inv_A = inv(A);
 inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
@@ -60,7 +64,7 @@ factor = 0.01;
 % tic
 for k = 1:N-1
     % Call function to calculate L for Z and Y
-    [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z(:,k), V(:,k), Y(:,k), beta);
+    [L_Z, L_V, L_Y] = calc_L_ZYV(Z(:,k), V(:,k), Y(:,k), beta);
     
     b1 = Z(:,k) + dt*(L_Z);
     b2 = V(:,k) + dt*((1/Cm)*L_V);
@@ -76,7 +80,7 @@ for k = 1:N-1
         mid_V = ZVY_k0(M+1:2*M);
         mid_y = ZVY_k0(2*M+1:3*M);
 
-        [L_Z, L_V, L_Y] = calc_L_ZYV_G(mid_Z, mid_V, mid_y, beta);
+        [L_Z, L_V, L_Y] = calc_L_ZYV(mid_Z, mid_V, mid_y, beta);
         b1 = Z(:,k) + dt*(L_Z);
         b2 = V(:,k) + dt*((1/Cm)*L_V);
         b3 = Y(:,k) + dt*L_Y;
