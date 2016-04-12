@@ -9,7 +9,7 @@ AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
 
 AllDir.SourceDir = '1. Source files';
 AllDir.InitalDataDir = '2. Inital Data';
-AllDir.SaveDir = '4. Output files\Figurers_Tim\Data_For_Tim_Plots';
+AllDir.SaveDir = '4. Output files';
 
 %% Ask what sections
 prompt = 'What sections? all/bounds/simple/SD/ED/plot_only: ';
@@ -40,12 +40,12 @@ if strcmp(mystr, 'bounds') | strcmp(mystr, 'all')
     end
     bt_point_found = 1;
     for k = 1:length(my_max)
-        if abs(my_max(k) - my_min(k)) < 50 & bt_point_found % 0.007
+        if abs(my_max(k) - my_min(k)) < 0.01 & bt_point_found % 0.007
             bt_point = mybeta(k);
             x_bt_pt = my_max(k);
         elseif bt_point_found
             bt_point_found = 0;
-        elseif abs(my_max(k) - my_min(k)) < 50%0.01
+        elseif abs(my_max(k) - my_min(k)) < 0.01
             top_point = mybeta(k);
             x_top_pt = my_max(k);
             break
@@ -56,17 +56,17 @@ if strcmp(mystr, 'bounds') | strcmp(mystr, 'all')
 end
 
 %% They all have the same IC
-
+tic
 Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
 D = 6e-6;
-dt = 2e-3; t_end = 44;
+dt = 0.1e-3; t_end = 100;
 dx = 1e-3;  
 
 t = 0:dt:t_end;   N = length(t);
 x = 0:dx:1;   M = length(x); 
 
 mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
-mybeta = linspace(0,1,M)';
+% mybeta = linspace(0,1,M)';
 % mybeta = [0.2*ones(1, round(0.2*M)),linspace(0.3,0.5,round(0.6*M)),0.2*ones(1, round(0.2*M))]';
 
 % Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
@@ -80,21 +80,21 @@ mybeta = linspace(0,1,M)';
 %     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 % mybeta = [0.6,0]';
 
-%% Do Second Section
+%% Do Simple no Diffusion Section
 if strcmp(mystr, 'simple') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
     [ Z2, V2 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, 1);
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('simple_data', '-regexp', '^(?!(mystr)$).')
 end
-%% Do Simple Diffusion section
+%% Do Simple Diffusion (Fickian) section
 if strcmp(mystr, 'SD') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
     [ Z2b, V2b ] = Gold_Simple_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
     cd([AllDir.ParentDir ,AllDir.SaveDir])
     save('SD_data', '-regexp', '^(?!(mystr)$).')
 end
-%% Do Second Section
+%% Do Electro Diffusion Section
 if strcmp(mystr, 'ED') | strcmp(mystr, 'all')
     cd([AllDir.ParentDir, AllDir.SourceDir])
     [ Z3, V3 ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
@@ -104,8 +104,8 @@ end
 
 %% Plot results
 cd([AllDir.ParentDir, AllDir.SourceDir])
-My_plot_report( mystr , AllDir)
+My_plot( mystr , AllDir)
 cd([AllDir.ParentDir, AllDir.SourceDir])
-
+toc
 % figure(3); colormap gray; 
 % figure(4); colormap gray

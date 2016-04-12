@@ -45,7 +45,7 @@ figure(1); plot(0,0,'-b',0,0,'-r', 0,0,'-k')
 figure(2); plot(0,0,'-b',0,0,'-r', 0,0,'-k')
 figure(3); plot(0,0,'-b',0,0,'-r', 0,0,'-k')
 
-load('C:\Temp\Diffusion\MOL_PDE\4. Output files\Docherty\Data_0_3.mat')
+load('C:\Temp\Diffusion\MOL_PDE\4. Output files\Figurers_Tim\Data_For_Tim_Plots\Data_0_3.mat')
 
 
 peek = Dotts( Z2 );

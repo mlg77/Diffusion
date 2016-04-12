@@ -15,8 +15,8 @@ t = 0:dt:t_end;   N = length(t);
 x = dx:dx:2*dx;   M = length(x); 
 
 %     mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
-% mybeta = [BetaBase*ones(1, round(0.5*M)),Betalow* ones(1,round(0.5*M)-1)]';
-mybeta = [BetaBase, Betalow]';
+mybeta = [BetaBase*ones(1, round(0.5*M)),Betalow* ones(1,round(0.5*M)-1)]';
+% mybeta = [BetaBase, Betalow]';
 
 %% Do Second Section
 [ Z2, V2 ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, 1);
@@ -24,7 +24,7 @@ mybeta = [BetaBase, Betalow]';
 %% Do Simple Diffusion section
 [ Z2b, V2b ] = Gold_Simple_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
 %% Do Second Section
-[ Z3, V3 ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
-
+% [ Z3, V3 ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, mybeta, D);
+Z3 = Z2b; 
 end
 

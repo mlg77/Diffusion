@@ -1,6 +1,7 @@
 function [ mysigma] = Solve_noinv( FullA, b, mysigma )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%From Tim Davids paper method of solving with no inverse for later
+%conversion to parallel
+%   
  %% Solve with no inv
     r = b - FullA*mysigma;
     p = r;

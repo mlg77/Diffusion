@@ -1,6 +1,7 @@
 function [ Z, V ] = Gold_Simple_Diffusion_sp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%Generate results for goldbeter simple fickian diffusion only
+%   Use Sparse Matrix to solve quicker
+%   Author Michelle Goodman
 
 %% Choose boolian
 % Choose Boundary condition
@@ -28,6 +29,7 @@ A2_const = 0;
 %% Start solver 
 % Set up IC as a vector length M
 Z = zeros(M, N);  V = zeros(M, N); Y = zeros(M, N);
+% Z = zeros(M, round(N/2));  V = zeros(M, round(N/2)); Y = zeros(M, round(N/2));
 Z(:,1) = ones(M,1) *Z_0;
 V(:,1) = ones(M,1) * V_0;
 Y(:,1) = ones(M,1) * Y_0;
@@ -61,8 +63,9 @@ inv_A(2*M+1:3*M,2*M+1:3*M) = eye(M);
 inv_A = sparse(inv_A);
 factor = 0.01;
 %% loop for all time
-% tic
+tic
 for k = 1:N-1
+%     k = round(j/2); 
     % Call function to calculate L for Z and Y
     [L_Z, L_V, L_Y] = calc_L_ZYV(Z(:,k), V(:,k), Y(:,k), beta);
     
@@ -73,7 +76,7 @@ for k = 1:N-1
     % Use Backward Euler Ax = b thus x = inv(A)*b
     b = [b1;b2;b3];
     
-    %% Before you continue test that everything is ok by refeeding
+    %% Before you continue test that everything is ok by refeeding Midstep
     ZVY_k0 = inv_A*b;
     for testing = 1:1:120
         mid_Z = ZVY_k0(1:M);
@@ -96,8 +99,8 @@ for k = 1:N-1
         error('Need more testing loops')
     end
     if k>factor*N
-%         factor = factor+0.01
-%         toc
+        factor = factor+0.01
+        toc
     end
     %% Save it 
     Z(:,k+1) = ZVY_k1(1:M);

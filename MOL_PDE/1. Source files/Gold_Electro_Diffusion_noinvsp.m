@@ -1,6 +1,8 @@
 function [ Z, V ] = Gold_Electro_Diffusion_noinvsp( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, D)
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%Solve Goldbeter with electro diffusion and fickian diffusion 
+%   Saves at every mid step
+%   Solves with no inverse
+%   Author Michelle Goodman
 %% Choose boolian
 % Choose Boundary condition
 reallycont = 0;

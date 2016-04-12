@@ -8,16 +8,16 @@ AllDir.SourceDir = '1. Source files';
 AllDir.InitalDataDir = '2. Inital Data';
 AllDir.SaveDir = '4. Output files\Docherty';
 
-diffusion = [0.5e-6:0.5e-6:10e-6];
+diffusion = 6e-6;%[0.5e-6:0.5e-6:10e-6];
 BetaBase = 0.2:0.01:0.26;
 Betalow = 0.3:0.05:0.7;
 % BetaBase = 0.25;
 % Betalow = 0.6;
 BetaHigh = Betalow;
 
-% Occ_Simple = zeros(length(BetaBase), length(Betalow));
-% Occ_Diff = zeros(length(BetaBase), length(Betalow));
-% total_num = size(Occ_Simple, 1)*size(Occ_Simple, 2);
+Occ_Simple = zeros(length(BetaBase), length(Betalow));
+Occ_Diff = zeros(length(BetaBase), length(Betalow));
+total_num = size(Occ_Simple, 1)*size(Occ_Simple, 2);
 count = 0;
 tic
 for k = 1:length(diffusion)
@@ -51,16 +51,16 @@ for k = 1:length(diffusion)
             %         print(['Fig_', num2str(i-1),'_', num2str(j)],'-dpng', '-r300')
             
             %% Is it occlatory
-%             test_point = round(0.25*length(x));
-%             test_range = round(0.5*length(t)):round(length(t));
-%             if max(Z2b(test_point, test_range)) - min(Z2b(test_point, test_range)) > 0.4
-%                 Occ_Simple(i,j) = 1;
-%             end
-%             if max(Z3(test_point, test_range)) - min(Z3(test_point, test_range)) > 0.4
-%                 Occ_Diff(i,j) = 1;
-%             end
-%             toc
-%             display([num2str(count), '/', num2str(total_num)])
+            test_point = round(0.25*length(x));
+            test_range = round(0.5*length(t)):round(length(t));
+            if max(Z2b(test_point, test_range)) - min(Z2b(test_point, test_range)) > 0.4
+                Occ_Simple(i,j) = 1;
+            end
+            if max(Z3(test_point, test_range)) - min(Z3(test_point, test_range)) > 0.4
+                Occ_Diff(i,j) = 1;
+            end
+            toc
+            display([num2str(count), '/', num2str(total_num)])
             %% FFT stuff
             L = length(t)-1; Fs = 1/(t(2)-t(1));
             P_S = abs(fft(Z2(1,0.5*L:end))/L); P_SD = abs(fft(Z2b(1,0.5*L:end))/L); P_ED = abs(fft(Z3(1,0.5*L:end))/L);
@@ -72,7 +72,7 @@ for k = 1:length(diffusion)
             P_S2(2:end-1) = 2*P_S2(2:end-1); P_SD2(2:end-1) = 2*P_SD2(2:end-1); P_ED2(2:end-1) = 2*P_ED2(2:end-1);
             
             f = Fs*(0:(L/2))/L;
-
+            
             figure('units','normalized','outerposition',[0 0 1 1])
             suptitle(['D = ', num2str(diffusion(k))])
             subplot(1,4,1); plot(f, P_S, 'b', f, P_S2, 'r'); axis([0,5,0,0.35])
@@ -94,7 +94,7 @@ for k = 1:length(diffusion)
             subplot(1,4,4); imagesc(t,flipud(x),Z2b); set(gca,'YDir','normal')
                 xlabel('Time, [s]'); ylabel('Position, x'); colormap jet
                 title('Z, Calcium Concentration in the Cytosol, [\muM]')
-                    
+                   
         end
         toc
     end

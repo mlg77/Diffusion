@@ -1,34 +1,9 @@
-%% Produce a map of period over space and time. Save as a sparse matrix
-% Use Flux data 
+function [ f2 ] = findchangingf(V, Z, x, t)
+%UNTITLED2 Summary of this function goes here
+%   Detailed explanation goes here
 
-clear; clc; close all; 
-%% Where am I
-AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
-
-AllDir.SourceDir = '1. Source files\';
-AllDir.InitalDataDir = '2. Inital Data';
-AllDir.SaveDir = '4. Output files';
-%% Plot raw flux data
-cd([AllDir.ParentDir ,AllDir.SaveDir])
-figure(1)
-load('ED_data_Fluxes');
-imagesc(t,flipud(x(2:end-1)),dX_dx(2:end-1,:))
-set(gca,'YDir','normal')
-xlabel('Time, [s]')
-ylabel('Position, x')
-title('dZ\_dx, Flux of Calcium Concentration in the Cytosol, [\muM m^{-1}]')
-colormap jet
-colorbar
-
-figure(2)
-imagesc(t,flipud(x(11:end-30)),gZdV_dx(11:end-30,:) )
-set(gca,'YDir','normal')
-xlabel('Time, [s]')
-ylabel('Position, x')
-title('gZdV\_dx, Calcium Concentration in the Cytosol, [\muM m^{-1}]')
-colorbar
-colormap jet
-
+dX_dx = V;
+gZdV_dx = Z;
 tic
 %% Create for loop to cucle through space
 myrecordV.f = sparse([]);     
@@ -51,7 +26,7 @@ for nno = 1: length(x)-2
         % Record if dv gradient changes so all max and min inc local
         if (sign(grad_gZdV_dx1)~= sign(grad_gZdV_dx)) 
             % if this is a min and the last one was a big difference
-            if  sign(grad_gZdV_dx) < 0 & abs(gZdV_dx(nno,i)- lastV.f)> 15
+            if  sign(grad_gZdV_dx) < 0 & abs(gZdV_dx(nno,i)- lastV.f)> 0.1 %15
                 % Save the last one as it was a max
                 myrecordV.f(lastV.nno, lastV.i) = lastV.f; 
             end
@@ -62,7 +37,7 @@ for nno = 1: length(x)-2
         end
         % Do the same for the Z
         if sign(grad_dX_dx1)~= sign(grad_dX_dx)
-            if  sign(grad_dX_dx) < 0 & abs(dX_dx(nno,i)- lastZ.f)> 200
+            if  sign(grad_dX_dx) < 0 & abs(dX_dx(nno,i)- lastZ.f)> 0.5%200
                 myrecordZ.f(lastZ.nno, lastZ.i) = lastZ.f;
             end
             lastZ.nno = nno;
@@ -121,15 +96,6 @@ for i = 1:length(the_i)
 end
 [rr, cc] =size(myrecordV.f2);
 
-myrecordV.f2 = [myrecordV.f2; zeros(length(x)-rr, cc)];
-figure(2)
-h = imagesc(t(1:49963),flipud(x(2:end-1)), myrecordV.f2);     
-set(gca,'YDir','normal') 
-xlabel('Time, [s]')
-ylabel('Position, x')
-cmap = jet(256);
-colormap(cmap);
-caxis(gca,[0.1-2/256, 3]);
-cmap(1,:)=[1,1,1];
-colormap(cmap)
-colorbar
+f2 = [myrecordV.f2; zeros(length(x)-rr, cc)];
+end
+

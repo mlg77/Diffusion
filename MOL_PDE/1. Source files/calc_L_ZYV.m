@@ -1,4 +1,4 @@
-function [L_Z, L_V, L_Y] = calc_L_ZYV_G(Z, V, Y, beta)
+function [L_Z, L_V, L_Y] = calc_L_ZYV(Z, V, Y, beta)
 %Goldbeter Equations Set
 %   Calculates the non linear concentration rates for the calciun in the
 %   cytocol, Z, the calcium in the stores, and the membrain potential.
@@ -28,13 +28,9 @@ v_2 = V_m2*Z.^n./(K_2^n + Z.^n);
 v_3 = V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p));
 
 %% From Goldbeter
-% L_Z =  v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z;
-% L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta);
-% L_Y =  v_2 - v_3 - k_f*Y;
-
-%% Goldbeter reduction
-L_Z =  v_0 + v_1*beta - v_2 + v_3  - k*Z;
+L_Z =  v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z;
 L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta);
-L_Y =  v_2 - v_3 ;
+L_Y =  v_2 - v_3 - k_f*Y;
+
 end
 

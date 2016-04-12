@@ -1,6 +1,6 @@
 function [ Z, V ] = Gold_Simple( dt, dx, x, t, M, N, Z_0, V_0, Y_0, beta, check);
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+%Solve Goldbeter et al with zero diffusion
+%   No inverse needed
 
 D  = 0;
 Cm = 1.9635e-14;
