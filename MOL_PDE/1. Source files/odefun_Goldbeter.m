@@ -2,6 +2,9 @@ function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Goldbeter( t, y , mybeta,
 %Ode function for goldbeter Explicit
 %   uses known values for dc/dx 
 
+if length(mybeta) ~= 1 | length(mybeta)*3 ~= length(y)
+    mybeta = mybeta(1);
+end
 %% Constants
 F = 9.6485e-5; 
 R = 8.314e-6; 
@@ -44,7 +47,7 @@ end
 
 
 %% Boundary conditions
-if Diff_type == 1
+if Diff_type == 1 & length(d2Zdx2)>1
     d2Zdx2(1) = d2Zdx2(1) + D/dx^2*Z(2);
     d2Zdx2(end) = d2Zdx2(end) + D/dx^2*Z(end-1);
 elseif Diff_type == 2
@@ -59,5 +62,9 @@ dYdt = L_Y;
 
 %% Output form
 dydt = [dZdt; dVdt; dYdt];
+
+% if rem(round(t)/50, 1)== 0
+%     display([num2str(t), ' ', toc])
+% end
 end
 
