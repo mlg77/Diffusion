@@ -2,7 +2,7 @@ function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Goldbeter( t, y , mybeta,
 %Ode function for goldbeter Explicit
 %   uses known values for dc/dx 
 
-if length(mybeta) ~= 1 | length(mybeta)*3 ~= length(y)
+if length(mybeta) ~= 1 && length(mybeta)*3 ~= length(y)
     mybeta = mybeta(1);
 end
 %% Constants

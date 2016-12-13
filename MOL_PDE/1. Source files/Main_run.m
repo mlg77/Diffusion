@@ -10,7 +10,7 @@ AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
 AllDir.SourceDir = '1. Source files';
 AllDir.SaveDir = '4. Output files\ODE45_solver';
 %% Span and Inital Conditions
-t0 = 0;   t1 = 1000; dt = 1;
+t0 = 0;   t1 = 100; dt = 1;
 tspan = [t0:dt: t1];
 dx = 1e-3;  
 x = 0:dx:1;    M = length(x); 

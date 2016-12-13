@@ -8,7 +8,7 @@ tic
 AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
 
 AllDir.SourceDir = '1. Source files';
-AllDir.SaveDir = '4. Output files\D_of_x';
+AllDir.SaveDir = '4. Output files\OralPresentation';
 %% Span and Inital Conditions
 prompt = 'What sections? Produce/plot: ';
 mystr = input(prompt,'s');
@@ -20,13 +20,13 @@ while ismember(mystr,acceptable) == 0
 end
 
 if strcmp(mystr, 'Produce')
-t0 = 0;   t1 = 60; dt = 0.005;
+t0 = 0;   t1 = 100; dt = 0.005;
 tspan = [t0:dt: t1];
 dx = 1e-3;  
 x = 0:dx:1;    M = length(x); 
-% mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
+mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 % mybeta = (x*0.56)';
-mybeta = x';
+% mybeta = x';
 % start_fixed_beta = find(x== 0.162);
 % fixed_beta = mybeta(start_fixed_beta);
 % mybeta(find(x== 0.156):start_fixed_beta) = fixed_beta;
@@ -40,11 +40,11 @@ display(['Diffusion = ', num2str(D)])
 
 mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
-% [t, y0D] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
-% 
-% Z0 = y0D(:, 1:M)';
-% V0 = y0D(:, M+1:2*M)';
-% Y0 = y0D(:, 2*M+1:3*M)';
+[t, y0D] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
+
+Z0D = y0D(:, 1:M)';
+V0D = y0D(:, M+1:2*M)';
+Y0D = y0D(:, 2*M+1:3*M)';
 
 %% Diffusion type 1 =(SD) Fickian, 2= (ED)Electro Diffusion 
 Diff_type = 1; D = 6e-6;%  0;%
@@ -76,6 +76,7 @@ cd([AllDir.ParentDir, AllDir.SourceDir])
 end
 
 My_plot_report(AllDir)
+% My_plot(AllDir)
 
 % bt_point = 0.8;  top_pt = 0.8470; top_point = 0.28; bt_pt = 0.2640;
 % t_end = t(end);

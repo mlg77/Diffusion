@@ -77,12 +77,12 @@ for i = find(t>5.5, 1):5: find(t>15, 1)%1:50:length(t)
     
     
     count = count+1;
-    set(gcf, 'Color' ,'w'); % Gif
-    f = getframe(figure(6)); % Gif
-    im(:,:,1,count) = rgb2ind(f.cdata,map,'nodither'); % Gif
-% pause(0.01)
+%     set(gcf, 'Color' ,'w'); % Gif
+%     f = getframe(figure(6)); % Gif
+%     im(:,:,1,count) = rgb2ind(f.cdata,map,'nodither'); % Gif
+pause(0.01)
 end
 
-cd([AllDir.ParentDir ,AllDir.SaveDir])
-imwrite(im,map,'Changet.gif','DelayTime',0.08);
-cd([AllDir.ParentDir, AllDir.SourceDir])
+% cd([AllDir.ParentDir ,AllDir.SaveDir])
+% imwrite(im,map,'Changet.gif','DelayTime',0.08);
+% cd([AllDir.ParentDir, AllDir.SourceDir])
