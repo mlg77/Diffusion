@@ -4,25 +4,31 @@ function [L_X, L_Y] = calc_Toy(X, Y, mybeta, toymodelNo)
 %   cytocol, Z, the calcium in the stores, and the membrain potential.
 %   where beta is a spatially varying variable 
 
-if toymodelNo == 1
+if toymodelNo(1) == 1
 	% Poster Symetrical 
-	mybeta = mybeta/2 + 1;
+% 	mybeta = mybeta/2 + 1;
 	alpha = 0.9;
 	endstuff = -X.^2./2;
  
 	L_X = mybeta.*Y - X.^3./3 + endstuff;
 	L_Y = -(mybeta.*X + alpha);
 	
-elseif toymodelNo == 2
+elseif toymodelNo(1) == 2
 	% Poster Penertrate
-	mybeta = mybeta*0.4 ;
+% 	mybeta = mybeta*0.4 ;
 	alpha = 0.2;
 	endstuff = X;
+    
+    if length(toymodelNo) == 1
+        factor = 1;
+    else
+        factor = toymodelNo(2);
+    end
 
-	L_X = mybeta.*Y - X.^3/3 + endstuff;
+	L_X = mybeta.*Y - X.^3/3 + factor*endstuff;
 	L_Y = -(mybeta.*X + alpha);
 
-elseif toymodelNo == 3
+elseif toymodelNo(1) == 3
 	error('Toymodel3?')
 	%% Attempt Sign / constant change  ###2
 	% mymu = mybeta;

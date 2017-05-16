@@ -56,7 +56,6 @@ end
 
 %% Find each component rate of change
 dZdt = d2Zdx2 +L_Z;
-% dVdt = 1/Cm*(L_V); % F/100 conversion to nM
 dVdt = 1/Cm*((F/100)*V_cyto*lil_z*d2Zdx2 +L_V); % F/100 conversion to nM
 dNdt = L_N;
 

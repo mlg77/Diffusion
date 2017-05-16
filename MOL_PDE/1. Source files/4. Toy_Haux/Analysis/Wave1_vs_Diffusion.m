@@ -19,9 +19,16 @@ mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
 
 % Different Diffusion types loop parameters
-Diffusionvalues = [0.1, 3:5,  6:12:1000];
+Diffusionvalues = [3:3:20, 30:10:100 150:50:1000];%,  [3:3:20, 30:10:100 150:50:1000];
 Data_vs_Diffusion = [];
 legendentry = {};
+
+% Three x points crossing the bifurcation point x=0.5 +/- dx of data for
+% each diffusion value
+Above_Bi_Z_data = [];
+At_Bi_Z_data = [];
+Below_Bi_Z_data = [];
+
 
 for jj = Diffusionvalues
     figure(1);
@@ -53,6 +60,10 @@ for jj = Diffusionvalues
     Data_vs_Diffusion(end,3) = max(wave_data.t); % Time at end
     Data_vs_Diffusion(end,4) = max(rate_change_wave); % wave speed
     Data_vs_Diffusion(end,5) = mybeta(find(min(wave_data.po)==wave_data.po)); % beta at depth
+    
+    Above_Bi_Z_data(end+1, :) = ZZFD(502,:);
+    At_Bi_Z_data(end+1, :) = ZZFD(501,:);
+    Below_Bi_Z_data(end+1, :) = ZZFD(500,:);
     
 %     figure(2)
 %     subplot(3,4,find(Diffusionvalues==jj))
@@ -92,10 +103,65 @@ xlabel('Diffusion x10^{-6}cm^2/s'); ylabel('Wave Speed')
 %% Relationship Suggested by Tim
 % Penetration depth times diffusion = velocity
 figure()
+subplot(1,2,1)
 plot(-Data_vs_Diffusion(:,4), Data_vs_Diffusion(:,1)*10^(-6)./Data_vs_Diffusion(:,2), 'x-b')
-y = 30*(-Data_vs_Diffusion(:,4)).^2+0.0447*-Data_vs_Diffusion(:,4) - 9e-6;
-hold on
-plot(-Data_vs_Diffusion(:,4), y, 'r-')
+% y = 30*(-Data_vs_Diffusion(:,4)).^2+0.0447*-Data_vs_Diffusion(:,4) - 9e-6;
+hold on; grid on
+% plot(-Data_vs_Diffusion(:,4), y, 'r-')
+xlabel('Wave Speed at end of penetrating wave [L/T]')
+ylabel('Diffusion/Penetration Depth [L/T]')
+
+subplot(1,2,2)
+loglog(-Data_vs_Diffusion(:,4), Data_vs_Diffusion(:,1)*10^(-6)./Data_vs_Diffusion(:,2), 'x-b')
+% y = 30*(-Data_vs_Diffusion(:,4)).^2+0.0447*-Data_vs_Diffusion(:,4) - 9e-6;
+hold on; grid on
+% plot(-Data_vs_Diffusion(:,4), y, 'r-')
+xlabel('Wave Speed at end of penetrating wave [L/T]')
+ylabel('Diffusion/Penetration Depth [L/T]')
+title('log log plot')
+
+%% Does the rate of change at the bifurcation point indicate depth of penetration?
+% first lets plot some of the concentration shapes
+figure()
+rate_change_Z_at_bi_below = (At_Bi_Z_data-Below_Bi_Z_data)/dx;
+rate_change_Z_at_bi_above = (At_Bi_Z_data-Above_Bi_Z_data)/dx;
+Second_rate_change_Z_at_bi = (rate_change_Z_at_bi_above - rate_change_Z_at_bi_below)/dx;
+
+for ii = 1:length(Diffusionvalues)
+    subplot(2,3,1); plot(tt, At_Bi_Z_data(ii, :)); hold on;
+    subplot(2,3,2); plot(tt, rate_change_Z_at_bi_below(ii,:)); hold on;
+    subplot(2,3,3); plot(tt, Second_rate_change_Z_at_bi(ii,:)); hold on;
+end
+subplot(2,3,1); axis([0,150,-2.5,2]); xlabel('time'); ylabel('Wave1 Concentration')
+subplot(2,3,2); axis([0,150,-800,800]); xlabel('time'); ylabel('Wave1 d/dx(Concentration)')
+subplot(2,3,3); axis([0,150,-1.5e6,1.5e6]);  xlabel('time'); ylabel('Wave1 d^2/dx^2(Concentration)')
+
+legend(legendentry)
+idx_firstwave = find(tt>=150,1);
+max_rate_change_region = max(transpose(rate_change_Z_at_bi_below(:, 1:idx_firstwave)));
+subplot(2,3,4); plot(max_rate_change_region, Data_vs_Diffusion(:,2))
+xlabel('Max Wave1 d/dx(Concentration)'); ylabel('Penetration Depth')
+
+max_second_rate_change_region = max(transpose(Second_rate_change_Z_at_bi(:, 1:idx_firstwave)));
+subplot(2,3,5); plot(max_second_rate_change_region, Data_vs_Diffusion(:,2))
+xlabel('Max Wave1 d^2/dx^2(Concentration)'); ylabel('Penetration Depth')
+
+subplot(2,3,6); loglog(max_rate_change_region, Data_vs_Diffusion(:,2))
+xlabel('Max Wave1 d/dx(Concentration)'); ylabel('Penetration Depth')
+grid on; title('log log plot')
+
+figure()
+subplot(1,3,1); plot(max_rate_change_region.*Diffusionvalues, Data_vs_Diffusion(:,2))
+xlabel('D* Max Wave1 d/dx(Concentration)'); ylabel('Penetration Depth'); grid on
+
+subplot(1,3,2); plot(max_second_rate_change_region.*Diffusionvalues, Data_vs_Diffusion(:,2))
+xlabel('D* Max Wave1 d^2/dx^2(Concentration)'); ylabel('Penetration Depth'); grid on
+
+subplot(1,3,3); loglog(max_rate_change_region.*Diffusionvalues, Data_vs_Diffusion(:,2))
+xlabel('D* Max Wave1 d/dx(Concentration)'); ylabel('Penetration Depth')
+grid on; title('log log plot')
+
+
 
 
 

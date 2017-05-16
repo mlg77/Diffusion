@@ -1,4 +1,4 @@
-function [L_Z, L_V, L_Y, v_2, v_3] = calc_Gold(Z, V, Y, beta)
+function [L_Z, L_A, L_Y, v_2, v_3] = calc_Dupont(Z, A, Y, beta)
 %Goldbeter Equations Set
 %   Calculates the non linear concentration rates for the calciun in the
 %   cytocol, Z, the calcium in the stores, and the membrain potential.
@@ -14,8 +14,7 @@ K_r = 2;
 K_2 = 1;
 K_a = 0.9;
 
-% V_m2 = 65; 
-V_m2 = 85; 
+V_m2 = 65; 
 V_m3 = 500;
 
 % Volume
@@ -32,7 +31,9 @@ p = 4;
 v_0 = 1;
 v_1 = 7.3;
 v_2 = V_m2*Z.^n./(K_2^n + Z.^n);
-v_3 = V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p));
+% v_3 = V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p)); % two pool
+% model
+v_3 = beta.*V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p)); % one pool model
 
 VR_ERcyt = 0.185;
 VR_ERcyt = 1;
@@ -47,11 +48,20 @@ B_cyt = 1;
 % VOCC =G_Ca *(V - V_Ca_1)./(1+ exp(-(V-V_Ca_2)/R_Ca));
 
 VOCC = 0;
-%% New L equations
-L_Z =  B_cyt*(v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z - VOCC);
-L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta-VOCC);
-L_Y =  (B_cyt/VR_ERcyt)*(v_2 - v_3 - k_f*Y ); % -v_1*beta
+%% A specific
+R2 = 0.05;
+v_p = 2/60; % 2 muM/min = /sec
+k_d =  1/60;
 
+%% New L equations
+% L_Z =  B_cyt*(v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z);
+% L_A =  v_p*R2 - k_d*A;
+% L_Y =  (B_cyt/VR_ERcyt)*(v_2 - v_3 - k_f*Y ); % -v_1*beta
+
+% one pool model
+L_Z =  B_cyt*(v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z);
+L_A =  v_p*R2 - k_d*A;
+L_Y =  (B_cyt/VR_ERcyt)*(v_2 - v_3 - k_f*Y ); %
 
 %% From Goldbeter
 % L_Z =  v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z;
