@@ -4,7 +4,7 @@ function [ mybeta, tspan, y0,x, M, mtol, odeoptions ] = Inital_Conditions( mystr
 %   Date: 02/01/17
 
 if strcmp(mystr, 'G') %Goldbeter
-	t0 = 0;   t1 = 60; dt = 0.01;
+	t0 = 0;   t1 = 60; dt = 0.001;
 	dx = 1e-3;  
 	x = 0:dx:1;    
 % 	mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
@@ -107,14 +107,14 @@ elseif strcmp(mystr, 'K') % Kathi Edit
 	y0 = [x*0+Z_0, x*0+V_0, x*0+Y_0];
     
 elseif strcmp(mystr, 'D') %Goldbeter
-	t0 = 0;   t1 = 100; dt = 0.01;
+	t0 = 0;   t1 = 60; dt = 0.002;
 	dx = 1e-3;  
 	x = 0:dx:1;    
 % 	mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 %     mybeta = (0.35*(1+tanh((x-0.5)/0.5)))';
-% 	mybeta = (x*0.56)'; % Used for half bi at 0.5
+	mybeta = (x*0.792)'; % Used for half bi at 0.5
 %     mybeta(floor(length(x)/2)) = 0;
-	mybeta = x';
+% 	mybeta = x';
 	% start_fixed_beta = find(x== 0.162);
 	% fixed_beta = mybeta(start_fixed_beta);
 	% mybeta(find(x== 0.156):start_fixed_beta) = fixed_beta;

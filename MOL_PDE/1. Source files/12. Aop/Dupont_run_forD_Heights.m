@@ -1,4 +1,4 @@
-function [ D_WvaeNo_Depth, Heights ] = Goldbeter_run_forD_Heights( D )
+function [ D_WvaeNo_Depth, Heights ] = Dupont_run_forD_Heights( D )
 %Goldbeter_run_forD Take the diffusion and run the program for that
 %diffusion
 %   The give the Heights of the first 5 waves plotting once No need to
@@ -17,7 +17,7 @@ M = length(x);
 mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
 tspan = [t0:dt: t1];
-mybeta = x'*0.56;
+mybeta = x'*0.792;
 
 %% Run Goldbeter
 
@@ -27,7 +27,7 @@ st_zero = 2; % First wave start point
 if start_at_zero
     st_zero = 0;
     display(['Diffusion = ', num2str(0)])
-    [t, y0D] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, 0), tspan, y0, odeoptions);
+    [t, y0D] = ode45(@(t,y) odefun_Dupont(t,y,mybeta,Diff_type, 0), tspan, y0, odeoptions);
     Goldbeter.Z0D = y0D(:, 1:M)';
     Goldbeter.V0D = y0D(:, M+1:2*M)';
     Goldbeter.Y0D = y0D(:, 2*M+1:3*M)';
@@ -45,7 +45,7 @@ if start_at_zero
 end
 %%
 display(['Diffusion = ', num2str(D)])
-[t, yFD] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
+[t, yFD] = ode45(@(t,y) odefun_Dupont(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
 ZFD = yFD(:, 1:M)';
 
 %% Plot

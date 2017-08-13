@@ -4,7 +4,7 @@ clear; clc; close all
 
 mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
-perts =  0:0.001:0.4;
+perts =  0.301+0.0005:0.0005:0.5;
 betas =  0:0.001:0.5;
 
 % perts = 0.2;
@@ -18,7 +18,7 @@ count = 0;
 t0 = 0;   t1 = 30; dt = 0.001;
 x = betas;
 M = length(x);
-Scalor = 0.78;
+Scalor = 0.792;
 mybeta = (x*Scalor)';
 Z_0 = 0.3; V_0 = -40; Y_0 = 0.5;
 y0 = [Z_0+ x*0, V_0+ x*0, Y_0+ x*0];
@@ -71,5 +71,5 @@ xlabel('Pertibations'); ylabel('Max \Phi'); title('Max \Phi')
 
 
 cd('C:\Temp\Diffusion\MOL_PDE\4. Output files\Stability\Dupont')
-save('sen_perts_data')
+save('sen_perts_data_sechalf')
 cd('C:\Temp\Diffusion\MOL_PDE\1. Source files\11. Stability\Dupont')

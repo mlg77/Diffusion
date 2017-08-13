@@ -12,13 +12,16 @@
 %   Author: Michelle Goodman
 %   Date: 6/5/17
 
+%%.
+%% !!!!!!! WARNING :   CURRENTLY NOT WORKING!!!!!!!! 
+%%
+
 clear; clc; close all
 dirs.this_file = 'C:\Temp\Diffusion\MOL_PDE\1. Source files\12. Aop';
-dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Stability';
+dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Stability\Dupont';
 %% Step 1 Load data and convert to AoP
 cd(dirs.save_file)
-load('Aop_Gold_2')
-% load('Aop_Gold')
+load('sen_perts_data_full')
 cd(dirs.this_file)
 
 position_x = 0:1e-3:0.5;
@@ -26,7 +29,7 @@ Aop = [];
 for ii = 1:length(position_x)
     Aop(ii, :) = max_Z(ii,:)-BaseZ(ii,:)-perts;
 end
-betas_coll = position_x*0.56;
+betas_coll = position_x*0.792;
 Aop(find(Aop <= 1e-10)) = 0;
 lastpertcare = find(perts >=0.3, 1);
 myColorMap = summer; 
@@ -37,12 +40,12 @@ myColorMap(1, :) = [1 1 1];
 % one just to make sure. Save this data so that only need to run once and
 % load it each other time
 % and Step 6 Plot actual heights on AoP graph!!
-pre_run = 1;
+pre_run = 0;
 if pre_run == 0
     ActualHeights = [];
     DepthData = [];
     for ii = [2,4,6,8,10] % Ten waves come out
-        [ D_WvaeNo_Depth, Heights ] = Goldbeter_run_forD_Heights( ii*1e-6 );
+        [ D_WvaeNo_Depth, Heights ] = Dupont_run_forD_Heights( ii*1e-6 );
         ActualHeights = [ActualHeights, Heights];
         DepthData = [DepthData; D_WvaeNo_Depth];
     end
@@ -101,21 +104,32 @@ for ii = 1:length(DepthData)
 end
 % DepthData is now [Diffusion, wave number, depth, raterequired]
 
-% Fit a1, a2, b1, b2
+%% Fit a1, a2, b1, b2
 % Force b1, b2 first
-A1 = [log(DepthData(1:10:50,1)/1e-6), DepthData(1:10:50,1)*0+1];
-b1 = DepthData(1:10:50, 4);
-b1_b2 = A1\b1
-
-A2 = [log(DepthData(:,1)/1e-6).*log(DepthData(:,2)), log(DepthData(:,2))];
-b2 = DepthData(:, 4) - log(DepthData(:,1)/1e-6)* b1_b2(1) -  b1_b2(2);
-a1_a2 = A2\b2
-
-A = [log(DepthData(:,1)/1e-6).*log(DepthData(:,2)), log(DepthData(:,2)), log(DepthData(:,1)/1e-6), DepthData(:,1)*0+1];
-b = DepthData(:, 4);
-
-% a1_a2_b1_b2 = A\b
-a1_a2_b1_b2 = [a1_a2; b1_b2];
+fit_a1a2b1b2 = 0;
+if fit_a1a2b1b2
+    % Find the second two first then the first two
+    % secondplot(:, 1) is D secondplot(:, 4) is Rate
+    A2 = [log(secondplot(:, 1)/1e-6), secondplot(:, 1)*0+1];
+    b2 = secondplot(:, 4);
+    b1_b2 = A2\b2;
+    
+    % now have b1 and b2 find the other two
+    A1 = [log(DepthData(:,1)/1e-6).*log(DepthData(:,2)), log(DepthData(:,2))];
+    b1 = DepthData(:, 4) - b1_b2(1).*DepthData(:,1)/1e-6 - b1_b2(2);
+    a1_a2 = A1\b1;
+    
+    a1_a2_b1_b2 = [a1_a2; b1_b2]
+    
+    theata_1_2_omega_1_2 = [a1_a2_b1_b2(1), a1_a2_b1_b2(3), a1_a2_b1_b2(2), a1_a2_b1_b2(4)]
+    
+    % Old method find all at once
+%     A = [log(DepthData(:,1)/1e-6).*log(DepthData(:,2)), log(DepthData(:,2)), log(DepthData(:,1)/1e-6), DepthData(:,1)*0+1];
+%     b = DepthData(:, 4);
+%     a1_a2_b1_b2 = A\b
+else
+    a1_a2_b1_b2 = [-0.1857, 0.0260, 0.0881,0.0657];
+end
 
 
 %% Step 5 Plot predicted depths based on a1a2b1b2 for first 5 waves on 

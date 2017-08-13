@@ -195,17 +195,49 @@ if Dupont.On == 1
 	subplot(2,3,6);		plot(Dupont.x, max_Z, 'b', Dupont.x, min_Z, 'b')
 % 	suptitle('Goldbeter')
 
-    figure()
     max_Z = max(Dupont.Z0D(:, round(length(Dupont.t)/2):end)'); 
 	min_Z = min(Dupont.Z0D(:, round(length(Dupont.t)/2):end)');
-    subplot(1,2,1);	hold on;	plot(Dupont.x, max_Z, 'r', Dupont.x, min_Z, 'r')
      max_Z = max(Dupont.Y0D(:, round(length(Dupont.t)/2):end)'); 
 	min_Z = min(Dupont.Y0D(:, round(length(Dupont.t)/2):end)');
-    subplot(1,2,2);	hold on;	plot(Dupont.x, max_Z, 'r', Dupont.x, min_Z, 'r')
-        
-    subplot(1,2,1); xlabel('\beta'); ylabel('Cytosolic Calcium [\muM]')
-    subplot(1,2,2); xlabel('\beta'); ylabel('Intracellular Store Calcium [\muM]')
+   
     
+    max_Z = max(Dupont.Z0D(:, round(length(Dupont.t)/2):end)'); 
+	min_Z = min(Dupont.Z0D(:, round(length(Dupont.t)/2):end)');
+    
+    period_calc = find(abs(max_Z - min_Z) >= 0.1);
+    Period_data = Dupont.x + nan;
+    for kk = 1:length(period_calc)
+        [PKS, LOCS] = findpeaks(Dupont.Z0D(period_calc(kk), round(length(Dupont.t)/2):end)');
+        period_idx = mean(LOCS(3:end-1) - LOCS(2:end-2));
+        Period_data(period_calc(kk)) = Dupont.t(floor(period_idx));
+    end 
+    
+    
+    figure(); hold on;
+    [AX,H1,H2] = plotyy(Dupont.x, max_Z, Dupont.x, Period_data)
+    plot(Dupont.x, max_Z, 'b', Dupont.x, min_Z, 'b', 'linewidth', 2)
+    H1.LineWidth = 2;  
+    H2.LineWidth = 2;
+    xlabel('Beta, \beta'); 
+    ylabel(AX(1),'Cytosolic Calcium [\muM]') 
+    ylabel(AX(2),'Period [s]') 
+    grid on;
+    
+    Dupont.x(period_calc(1))
+    Dupont.x(period_calc(end))
+    
+    % Standard Plot
+	figure();
+	imagesc(Dupont.t,flipud(Dupont.x),Dupont.Z0D)
+    hold on;            plot([Dupont.t(1), Dupont.t(end)],[Dupont.x(B_b), Dupont.x(B_b)], 'k', 'linewidth', 2)
+	set(gca,'YDir','normal'); xlabel('Time, [s]'); ylabel('Position, x')
+	colormap jet; axis([0, 50, 0, 1]); colorbar
+    
+    figure()
+    imagesc(Dupont.t,flipud(Dupont.x),Dupont.ZFD)
+    hold on;            plot([Dupont.t(1), Dupont.t(end)],[Dupont.x(B_b), Dupont.x(B_b)], 'k', 'linewidth', 2)
+	set(gca,'YDir','normal'); xlabel('Time, [s]'); ylabel('Position, x')
+	colormap jet; axis([0, 50, 0, 1]); colorbar
 end
 
 

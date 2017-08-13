@@ -1,4 +1,4 @@
-function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Goldbeter( t, y , mybeta, Diff_type, D)
+function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Dupont( t, y , mybeta, Diff_type, D)
 %Ode function for goldbeter Explicit
 %   uses known values for dc/dx 
 
@@ -20,21 +20,25 @@ V_cell = pi*radius_cell^2*length_cell;
 fraction_cyto = 0.55;
 V_cyto = fraction_cyto*V_cell;
 
+% A specific
+DA = 200;
 
 %% Split into Z, V, Y
 M = length(y)/3;
-Z = y(1:M);    V = y(M+1:2*M);    Y = y(2*M+1:3*M);
+Z = y(1:M);    A = y(M+1:2*M);    Y = y(2*M+1:3*M);
 
 %% Find x 
 dx = 1/(M-1);
 
 %% Calculate Reaction diffusion equation
-[L_Z, L_V, L_Y, v_2, v_3] = calc_Gold(Z, V, Y, mybeta);
+[L_Z, L_A, L_Y, v_2, v_3] = calc_Dupont(Z, A, Y, mybeta);
 
 %% Calculate diffusion
 if Diff_type == 1
     d2Zdx2 = D/dx^2*(-2*Z + [Z(2:end); 0] + [0; Z(1:end-1)]);
+    d2Adx2 = DA/dx^2*(-2*A + [A(2:end); 0] + [0; A(1:end-1)]);
 elseif Diff_type == 2
+    error('not this model')
     term1 = (-2*Z + [Z(2:end); 0] + [0; Z(1:end-1)]);
     term2 = (my_gamma./4).*([0; Z(3:end); 0] - [0; Z(1:end-2);0]).*([0;V(3:end); 0] - [0; V(1:end-2);0]);
     term3 = my_gamma*Z.*(-2*V + [V(2:end); 0] + [0; V(1:end-1)]);
@@ -48,18 +52,23 @@ end
 if Diff_type == 1 & length(d2Zdx2)>1
     d2Zdx2(1) = d2Zdx2(1) + D/dx^2*Z(2);
     d2Zdx2(end) = d2Zdx2(end) + D/dx^2*Z(end-1);
+    
+    d2Adx2(1) = d2Adx2(1) + D/dx^2*Z(2);
+    d2Adx2(end) = d2Adx2(end) + D/dx^2*Z(end-1);
 elseif Diff_type == 2
     d2Zdx2(1) = d2Zdx2(1) + D/dx^2*(Z(2)+ my_gamma*Z(1)*V(2));
     d2Zdx2(end) = d2Zdx2(end) + D/dx^2*(Z(end-1) + my_gamma*Z(end)*V(end-1));
 end
 
+d2Adx2 = 0;
+
 %% Find each component rate of change
 dZdt = d2Zdx2 +L_Z;
-dVdt = 1/Cm*(F*V_cyto*lil_z*d2Zdx2 +L_V);
+dAdt = d2Adx2 +L_A;
 dYdt = L_Y;
 
 %% Output form
-dydt = [dZdt; dVdt; dYdt];
+dydt = [dZdt; dAdt; dYdt];
 
 end
 
