@@ -218,7 +218,7 @@ for ii = 1:numModels
 		Dupont.x = x;
     end	
 end
-ifsave = 1;
+ifsave = 0;
 if numModels == 0 
     cd([AllDir.ParentDir , AllDir.SaveDir ])
     load('All_run_data')

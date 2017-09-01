@@ -9,9 +9,9 @@ if strcmp(mystr, 'G') %Goldbeter
 	x = 0:dx:1;    
 % 	mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 %     mybeta = (0.35*(1+tanh((x-0.5)/0.5)))';
-	mybeta = (x*0.56)'; % Used for half bi at 0.5
+% 	mybeta = (x*0.56)'; % Used for half bi at 0.5
 %     mybeta(floor(length(x)/2)) = 0;
-% 	mybeta = x';
+	mybeta = x';
 
 %% New dbetadx
 typedbetadx = 0;
@@ -62,8 +62,8 @@ elseif strcmp(mystr, 'E') % Ernmentrout
 	t0 = 0;   t1 = 80; dt = 0.01;
 	dx = 1e-3;  
 	x = 0:dx:1;   
-%     mybeta = (x*0.3 +0.2)';
-    mybeta = (x*0.1966 +0.2)';
+    mybeta = (x*0.3 +0.2)';
+%     mybeta = (x*0.1966 +0.2)'; Half?
 % 	mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 	Z_0 = 300; V_0 = -40; N_0 = 0.5;
 	y0 = [x*0+Z_0, x*0+V_0, x*0+N_0];

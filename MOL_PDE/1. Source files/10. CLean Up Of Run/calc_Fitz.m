@@ -1,4 +1,4 @@
-function [L_X, L_Y] = calc_Fitz(X, Y, mybeta)
+function [L_X, L_Y] = calc_Fitz(X, V, mybeta)
 %FitzHugh Nagumo Model Set
 %   Calculates the non linear concentration rates for the calciun in the
 %   cytocol, Z, the calcium in the stores, and the membrain potential.
@@ -12,8 +12,9 @@ mya = 0.7;
 myb = 0.8;
 mtou = 12.5;
 
-L_X = X - X.^3./3 - Y + myI;
-L_Y = (X + mya - myb.*Y)./mtou;
+L_X = (V + mya - myb.*X)./mtou;
+L_V = V - V.^3./3 - X + myI;
 
+L_Y = L_V;
 end
 
