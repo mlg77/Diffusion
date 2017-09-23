@@ -5,6 +5,10 @@ function [ dydt , L_X, L_Y, d2Zdx2] = odefun_Fitz( t, y , mybeta, Diff_type, D)
 M = length(y)/2;
 X = y(1:M);    Y = y(M+1:2*M);  
 
+Cm = 1.9635e-14;
+malpha = 7.9976e15; %nMC^-1
+conversion = alpha/Cm;
+
 %% Find x 
 dx = 1/(M-1);
 
@@ -35,8 +39,8 @@ elseif Diff_type == 2
 end
 
 %% Find each component rate of change
-dXdt = d2Zdx2 +L_X;
-dYdt = L_Y;
+dXdt = L_X;
+dYdt = conversion*d2Zdx2 +L_Y;
 
 %% Output form
 dydt = [dXdt; dYdt];

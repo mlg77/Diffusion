@@ -13,9 +13,9 @@ for ii = 1:M
         TVector(ii) = 0;
     else
         TZ = median( LOCS(3:end-1) - LOCS(2:end-2));
-        if TZ>15/dt
-            TZ = 0;
-        end
+%         if TZ>15/dt
+%             TZ = 0;
+%         end
         TVector(ii) = TZ*dt;
     end
 end

@@ -33,7 +33,7 @@ cd(dir_source);
 
 
 %% Inital Conditions to eaisly change
-t0 = 0;   t1 = 600; dt = 0.01;
+t0 = 0;   t1 = 2000; dt = 0.01;
 dx = 1e-3;  
 t = t0:dt:t1;
 x = (0:dx:1);   
@@ -97,7 +97,7 @@ for ii = 1:6
 end
 
 xlabel('Time [s]')
-ylabel('Concentration ')
+ylabel('Recovery Voltage')
 title(['All in one'])
 legend(myleg)
 
@@ -106,7 +106,7 @@ hold on;
 plot(mybeta, BifuMax.Z, 'b')
 plot(mybeta, BifuMin.Z, 'b')
 xlabel('Beta, \beta')
-ylabel('Concentration')
+ylabel('Recovery Voltage')
 
 figure(9)
 plot(mybeta, TVector)
@@ -116,8 +116,9 @@ ylabel('Period [s]')
 figure(10)
 [hAx,hLine1,hLine2]  = plotyy([mybeta; nan; mybeta], [BifuMax.Z;nan; BifuMin.Z], mybeta, TVector);
 xlabel('Beta, \beta')
-ylabel(hAx(1),'Concentration [\mu M]') % left y-axis 
+ylabel(hAx(1),'Recovery Voltage') % left y-axis 
 ylabel(hAx(2),'Period [s]') % right y-axis
+
 
 NumberOfFig = 10;
 for ii = 1:NumberOfFig

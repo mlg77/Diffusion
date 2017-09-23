@@ -34,6 +34,8 @@ cd(dir_source);
 
 %% Inital Conditions to eaisly change
 t0 = 0;   t1 = 200; dt = 0.001;
+tspan = [t0:dt: t1];
+t = tspan;
 dx = 1e-3;  
 x = 0:dx:1;   
 mybeta = x';

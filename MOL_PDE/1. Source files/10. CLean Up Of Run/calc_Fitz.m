@@ -16,5 +16,29 @@ L_X = (V + mya - myb.*X)./mtou;
 L_V = V - V.^3./3 - X + myI;
 
 L_Y = L_V;
+
+
+%% TRYING TO REPLICATE PAPER
+U = X;
+
+% a = 0.7;
+% b = 0.8;
+% c = 3;
+% c2 = 3;
+% d = 3;
+% I = -1;
+% Van der pol equations
+% a = 0;
+% b = 0;
+% c = 3;
+% c2 = 3;
+% d = 3;
+% I = -1;
+% 
+% L_X = -(1/c2)*( V - a + b*U);
+% L_V =  c*(V - V.^3./d + U + myI*I);
+
+L_Y = L_V;
+
 end
 
