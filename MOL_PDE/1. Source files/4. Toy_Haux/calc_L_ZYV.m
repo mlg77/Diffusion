@@ -48,7 +48,7 @@ function [L_X, L_Y] = calc_L_ZYV(X, Y, mybeta)
 % L_Y = -(mybeta.*X + alpha);
 
 %% Poster Penertrate
-mybeta = mybeta*0.4 ;
+mybeta = mybeta ;
 alpha = 0.2;
 endstuff = X;
 

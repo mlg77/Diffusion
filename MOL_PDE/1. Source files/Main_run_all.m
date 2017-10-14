@@ -5,7 +5,8 @@
 clear; clc; close all; 
 tic
 %% Where am I
-AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
+% AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
+AllDir.ParentDir = 'C:\Users\Michelle\Documents\GitHub\Diffusion\MOL_PDE\';
 
 AllDir.SourceDir = '1. Source files';
 AllDir.SaveDir = '4. Output files\OralPresentation';

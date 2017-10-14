@@ -6,7 +6,8 @@ clear; clc; % close all;
 tic
 
 %% File Location
-AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
+% AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
+AllDir.ParentDir = 'C:\Users\Michelle\Documents\GitHub\Diffusion\MOL_PDE\';
 AllDir.SourceDir = '1. Source files\10. CLean Up Of Run\';
 AllDir.SaveDir = '4. Output files\NewFormat';
 AllDir.Analysis = 'Analysis_functions';
@@ -51,7 +52,9 @@ for ii = 1:numModels
 		Goldbeter.On = 1;
 		Diff_type = 1; D =0;
 		display(['Diffusion = ', num2str(D)])
+        tic
 		[t, y0D] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions); 
+        toc
 		Goldbeter.Z0D = y0D(:, 1:M)';
 		Goldbeter.V0D = y0D(:, M+1:2*M)';
 		Goldbeter.Y0D = y0D(:, 2*M+1:3*M)';
@@ -81,7 +84,9 @@ for ii = 1:numModels
         
 		Diff_type = 1; D = 6e-6;
 		display(['Diffusion = ', num2str(D)])
+        tic
 		[t, yFD] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
+        toc
 		Goldbeter.ZFD = yFD(:, 1:M)';
 		Goldbeter.VFD = yFD(:, M+1:2*M)';
 		Goldbeter.YFD = yFD(:, 2*M+1:3*M)';

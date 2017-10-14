@@ -4,7 +4,7 @@ function [ mybeta, tspan, y0,x, M, mtol, odeoptions ] = Inital_Conditions( mystr
 %   Date: 02/01/17
 
 if strcmp(mystr, 'G') %Goldbeter
-	t0 = 0;   t1 = 60; dt = 0.001;
+	t0 = 0;   t1 = 20; dt = 0.001;
 	dx = 1e-3;  
 	x = 0:dx:1;    
 % 	mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
@@ -83,6 +83,8 @@ elseif strcmp(mystr, 'T2') % Toy Model 2 Penetrate
 	x = (0:dx:1);    M = length(x); 
 	mybeta = 0.2*(1+tanh((x-0.5)/0.4))'; % HomoPaper Front heavy
 % 	x = mybeta';
+    mybeta = 0.2*(1+tanh((x-0.5)/0.4))'; % Testing
+    mybeta(floor(length(x)/2):end) = mybeta(floor(length(x)*0.56));
 	X_0 = -2; Y_0 = 2; 
 	y0 = [x*0+X_0, x*0+Y_0];
 	

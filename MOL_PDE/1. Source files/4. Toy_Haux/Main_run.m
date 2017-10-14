@@ -2,7 +2,7 @@ clear; clc;
 close all
 clf
 %% Where am I
-AllDir.ParentDir = 'C:\Temp\Diffusion\MOL_PDE\';
+AllDir.ParentDir = 'C:\Users\Michelle\Documents\GitHub\Diffusion\MOL_PDE\';
 
 AllDir.SourceDir = '1. Source files\4. Toy_Haux';
 AllDir.SaveDir = '4. Output files\ODE45_solver';
@@ -16,10 +16,10 @@ x = (0:dx:1);    M = length(x);
 % mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 % mybeta = 0.5+0.4*(1+tanh((x-0.5)/0.25))'; % HomoPaper Symetric
 % mybeta = 0.4*(1+tanh((x-0.5)/0.25))'; % HomoPaper Front heavy
-% mybeta = 0.2*(1+tanh((x-0.5)/0.4))';
-mybeta = x';
+mybeta = 0.2*(1+tanh((x-0.5)/0.4))';
+% mybeta = x';
 % mybeta = (0.5*x'+0.25);
-x = mybeta';
+% x = mybeta';
 
 X_0 = -1; Y_0 = -1; 
 % X_0 = 0.5; Y_0 = 0.1; 
