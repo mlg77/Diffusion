@@ -108,7 +108,7 @@ elseif strcmp(mystr, 'K') % Kathi Edit
 	Z_0 = 0.1; V_0 = -28.42; Y_0 = 1.36;
 	y0 = [x*0+Z_0, x*0+V_0, x*0+Y_0];
     
-elseif strcmp(mystr, 'D') %Goldbeter
+elseif strcmp(mystr, 'D') %Dupont
 	t0 = 0;   t1 = 60; dt = 0.002;
 	dx = 1e-3;  
 	x = 0:dx:1;    

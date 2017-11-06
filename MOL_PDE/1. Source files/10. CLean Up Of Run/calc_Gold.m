@@ -49,7 +49,8 @@ B_cyt = 1;
 VOCC = 0;
 %% New L equations
 L_Z =  B_cyt*(v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z - VOCC);
-L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta-VOCC);
+% L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta-VOCC);
+L_V =  F* V_cyto*(v_0 - k*Z -VOCC);
 L_Y =  (B_cyt/VR_ERcyt)*(v_2 - v_3 - k_f*Y ); % -v_1*beta
 
 

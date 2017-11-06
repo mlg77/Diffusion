@@ -124,9 +124,26 @@ for ii = 1:NumberOfFig
     savefig(ii, [num2str(ii), 'BiDataFigs.fig'])
 end
 
+
+
+
+
+figure(99)
+hold on;
+plot(mybeta, BifuMax.V, 'b')
+plot(mybeta, BifuMin.V, 'b')
+xlabel('Beta, \beta')
+ylabel('Membrane Potential [mV]')
+
+
+set(gcf,'PaperPositionMode','auto')
+print([num2str(12), '_BiDataFigs'],'-dpng', '-r300')
+
+cd([dir_save, '\1. Dupont']) 
+savefig(99, [num2str(12), 'BiDataFigs.fig'])
+
+
 cd(dir_parent);
-
-
 
 
 

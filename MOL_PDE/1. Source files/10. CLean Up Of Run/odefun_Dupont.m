@@ -2,7 +2,7 @@ function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Dupont( t, y , mybeta, Di
 %Ode function for goldbeter Explicit
 %   uses known values for dc/dx 
 
-if length(mybeta) ~= 1 && length(mybeta)*3 ~= length(y)
+if length(mybeta) ~= 1 && length(mybeta)*4 ~= length(y)
     mybeta = mybeta(1);
 end
 %% Constants
@@ -24,14 +24,14 @@ V_cyto = fraction_cyto*V_cell;
 DA = 200;
 
 %% Split into Z, V, Y
-M = length(y)/3;
-Z = y(1:M);    A = y(M+1:2*M);    Y = y(2*M+1:3*M);
+M = length(y)/4;
+Z = y(1:M);    A = y(M+1:2*M);    Y = y(2*M+1:3*M);  V = y(3*M+1:4*M);
 
 %% Find x 
 dx = 1/(M-1);
 
 %% Calculate Reaction diffusion equation
-[L_Z, L_A, L_Y, v_2, v_3] = calc_Dupont(Z, A, Y, mybeta);
+[L_Z, L_A, L_Y, L_V, v_2, v_3] = calc_Dupont(Z, A, Y, V, mybeta);
 
 %% Calculate diffusion
 if Diff_type == 1
@@ -66,9 +66,10 @@ d2Adx2 = 0;
 dZdt = d2Zdx2 +L_Z;
 dAdt = d2Adx2 +L_A;
 dYdt = L_Y;
+dVdt = L_V;
 
 %% Output form
-dydt = [dZdt; dAdt; dYdt];
+dydt = [dZdt; dAdt; dYdt; dVdt];
 
 end
 

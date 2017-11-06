@@ -1,13 +1,14 @@
 % Run the 2d Model
 clear; clc; close all
 
-t0 = 0;   t1 = 6; dt = 0.01;
+t0 = 0;   t1 = 20; dt = 0.01;
 dx1 = 0.5e-2;  
 x1 = 0:dx1:1;
 x2 = x1;
 M = length(x1);
 
-linear_beta = (x1*0.792)';
+LowerBi = 0.2760;
+linear_beta = (LowerBi/0.5)*(x1');
 
 % add more
 linear_beta = [flipud(linear_beta); zeros(10, 1)];
@@ -26,7 +27,7 @@ tspan = [t0:dt: t1];
 % D =0;
 % Z_0 = 0.5; Y_0 = 0.5;
 % y0 = [mybeta*0+Z_0; mybeta*0+Y_0];
-% display(['Dupont 2D D=0'])
+% display(['Goldbeter 2D D=0'])
 % tic
 % [t, y0D] = ode45(@(t,y) odefun_Goldbeter( t, y , mybeta, D, MeshM), tspan, y0, odeoptions); 
 % toc
@@ -35,9 +36,9 @@ tspan = [t0:dt: t1];
 
 %% Run D = 0 Simulation
 D =6e-6;
-Z_0 = 0.2161; Y_0 = 2.7353;
+Z_0 = 0.5; Y_0 = 0.5;
 y0 = [mybeta*0+Z_0; mybeta*0+Y_0];
-display(['Dupont 2D D=6e-6'])
+display(['Goldbeter 2D D=6e-6'])
 tic
 [t, yFD] = ode45(@(t,y) odefun_Goldbeter( t, y , mybeta, D, MeshM), tspan, y0, odeoptions); 
 toc

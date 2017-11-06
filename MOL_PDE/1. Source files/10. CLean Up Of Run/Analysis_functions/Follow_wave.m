@@ -43,7 +43,7 @@ tol = 0.5*max(max(Z)) + (-0.5 +1)*min(min(Z)); % For Goldbeter
 % Follow wave if for loop
 for ii = idx_xstart-1: -1: 1
     % Find the next peaks
-    Next_row = Z(ii,wave_data.idx_t(count):wave_data.idx_t(count)+buff2);
+    Next_row = Z(ii,wave_data.idx_t(count)-:wave_data.idx_t(count)+buff2);
     [PKS2,LOCS2] = findpeaks(Next_row);
     LOCS2 = LOCS2 + wave_data.idx_t(count)-1;
     

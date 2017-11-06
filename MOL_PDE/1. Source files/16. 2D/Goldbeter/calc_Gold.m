@@ -25,7 +25,7 @@ p = 4;
 v_0 = 1;
 v_1 = 7.3;
 v_2 = V_m2*Z.^n./(K_2^n + Z.^n);
-v_3 = mybeta.*V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p));
+v_3 = V_m3.*(Y.^n./(K_r^n + Y.^n)).*(Z.^p./(K_a^p + Z.^p));
 
 
 VOCC = 0;

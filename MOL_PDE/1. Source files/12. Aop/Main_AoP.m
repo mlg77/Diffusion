@@ -197,12 +197,14 @@ end
 
 %% overlay
 % 
-% figure(4)
-% for ii = [1,2,4,8]
-%     wveno = 1:10;
-%     a2 = a1_a2_b1_b2(3)*log(ii) + a1_a2_b1_b2(4);
-%     a1 = a1_a2_b1_b2(1)*log(ii) + a1_a2_b1_b2(2);
-%     R = a1*log(wveno) + a2;
-%     plot(wveno, R, ':r')
-%     
-% end
+figure(4)
+for ii = [1,2,4,8]
+    wveno = 1:10;
+    a2 = a1_a2_b1_b2(3)*log(ii) + a1_a2_b1_b2(4);
+    a1 = a1_a2_b1_b2(1)*log(ii) + a1_a2_b1_b2(2);
+    R = a1*log(wveno) + a2;
+    plot(wveno, R, ':r')
+    
+end
+
+

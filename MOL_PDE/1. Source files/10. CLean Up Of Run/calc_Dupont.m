@@ -1,4 +1,4 @@
-function [L_Z, L_A, L_Y, v_2, v_3] = calc_Dupont(Z, A, Y, beta)
+function [L_Z, L_A, L_Y, L_V, v_2, v_3] = calc_Dupont(Z, A, Y,V, beta)
 %Goldbeter Equations Set
 %   Calculates the non linear concentration rates for the calciun in the
 %   cytocol, Z, the calcium in the stores, and the membrain potential.
@@ -20,6 +20,7 @@ V_m3 = 500;
 % Volume
 V_cyto = [6.47953484802895e-10];
 F = 9.6485e-5;
+
 
 k =  10;
 k_f = 1;
@@ -65,8 +66,13 @@ L_Y =  (B_cyt/VR_ERcyt)*(v_2 - v_3 - k_f*Y ); %
 
 %% From Goldbeter
 % L_Z =  v_0 + v_1*beta - v_2 + v_3 + k_f*Y - k*Z;
-% L_V =  F* V_cyto*(v_0 - k*Z + v_1*beta);
+
 % L_Y =  v_2 - v_3 - k_f*Y;
 
+% Volume
+V_cyto = [6.47953484802895e-10];
+F = 9.6485e-5;
+Cm = 1.9635e-14;
+L_V =  (1/Cm)*F*V_cyto*( B_cyt*(v_0 + v_1*beta - k*Z));
 end
 

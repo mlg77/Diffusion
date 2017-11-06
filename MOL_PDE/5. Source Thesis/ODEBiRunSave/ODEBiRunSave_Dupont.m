@@ -33,7 +33,7 @@ cd(dir_source);
 
 
 %% Inital Conditions to eaisly change
-t0 = 0;   t1 = 100; dt = 0.002;
+t0 = 0;   t1 = 100; dt = 0.002; dx = 1e-3;
 x = 0:dx:1;    
 mybeta = x'; % Used for half bi at 0.5
 
@@ -50,8 +50,8 @@ tspan = [t0:dt: t1];
 %% Run Simulation
 run_model = 'G';
 if run_model == 'G'
-    Z_0 = 0.5; A_0 = 0.1; Y_0 = 0.5;
-	y0 = [x*0+Z_0, x*0+A_0, x*0+Y_0];
+    Z_0 = 0.5; A_0 = 0.1; Y_0 = 0.5; V_0 = -40;
+	y0 = [x*0+Z_0, x*0+A_0, x*0+Y_0, x*0+V_0];
 
     display(['Dupont'])
     tic
@@ -60,16 +60,19 @@ if run_model == 'G'
     Sol.Z = y0D(:, 1:M)';
     Sol.A = y0D(:, M+1:2*M)';
     Sol.Y = y0D(:, 2*M+1:3*M)';
+    Sol.V = y0D(:, 3*M+1:4*M)';
         
     per_end = 0.5;
     
     BifuMax.Z = max(Sol.Z(:, floor(N*per_end):end)')';
     BifuMax.A = max(Sol.A(:, floor(N*per_end):end)')';
     BifuMax.Y = max(Sol.Y(:, floor(N*per_end):end)')';
+    BifuMax.V = max(Sol.V(:, floor(N*per_end):end)')';
         
     BifuMin.Z = min(Sol.Z(:, floor(N*per_end):end)')';
     BifuMin.A = min(Sol.A(:, floor(N*per_end):end)')';
     BifuMin.Y = min(Sol.Y(:, floor(N*per_end):end)')';
+    BifuMin.V = min(Sol.V(:, floor(N*per_end):end)')';
         
     cd([dir_source, '\Analysis_functions']);
     [ pointsfound ] = Bifurcation_points( x,t,Sol.Z );
@@ -81,8 +84,8 @@ end
 
 %% Things to save
 % Sol, t, s, mybeta, BifuMax, BifuMin, TVector, pointsfound
-Z = Sol.Z; Y = Sol.Y; A = Sol.A;
-save('DataBi', 'Z','Y', 'A', 't', 'x', 'mybeta', 'BifuMax', 'BifuMin', 'TVector', 'pointsfound', 'runtime')
+Z = Sol.Z; Y = Sol.Y; A = Sol.A; V = Sol.V;
+save('DataBi', 'Z','Y', 'A', 'V', 't', 'x', 'mybeta', 'BifuMax', 'BifuMin', 'TVector', 'pointsfound', 'runtime')
 
 %% Make Plots
 The6_xpoints = [0.1,0.2,0.4,0.6,0.85,0.95];
@@ -143,12 +146,21 @@ print([num2str(i), '_BiDataFigs'],'-dpng', '-r300')
 end
 
 
+figure(99)
+hold on;
+plot(mybeta, BifuMax.V, 'b')
+plot(mybeta, BifuMin.V, 'b')
+xlabel('Beta, \beta')
+ylabel('Membrane Potential [mV]')
+
+set(gcf,'PaperPositionMode','auto')
+print([num2str(12), '_BiDataFigs'],'-dpng', '-r300')
+
+cd([dir_save, '\1. Dupont']) 
+savefig(99, [num2str(12), 'BiDataFigs.fig'])
+
+
 cd(dir_parent);
-
-
-
-
-
 
 
 
