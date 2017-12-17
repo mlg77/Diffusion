@@ -1,15 +1,16 @@
-function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Goldbeter( t, y , mybeta, Diff_type, D, flag)
+function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Goldbeter( t, y , mybeta, Diff_type, D)
 %Ode function for goldbeter Explicit
 %   uses known values for dc/dx 
-if flag == 1
-    dydt = y*0;
-    L_Z = zeros(length(y)/3,1);
-    L_Y = L_Z;
-    d2Zdx2 = L_Z;
-    v_2 = L_Z;
-    v_3 = L_Z;
-    return
-end
+% global flag
+% if flag == 1
+%     dydt = y*0;
+%     L_Z = zeros(length(y)/3,1);
+%     L_Y = L_Z;
+%     d2Zdx2 = L_Z;
+%     v_2 = L_Z;
+%     v_3 = L_Z;
+%     return
+% end
 
 %% Constants
 Cm = 1.9635e-14;

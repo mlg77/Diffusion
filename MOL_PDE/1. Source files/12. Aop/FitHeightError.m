@@ -13,7 +13,7 @@
 clear; clc; close all
 %% Step 1: Load and plot AoP grid
 dirs.this_file = 'C:\Temp\Diffusion\MOL_PDE\1. Source files\12. Aop';
-dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Stability\Dupont';
+dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Archive_PreThesis\Stability\Dupont';
 cd(dirs.save_file)
 load('sen_perts_data_full')
 cd(dirs.this_file)

@@ -40,6 +40,7 @@ wave_data.idx_t(1) = LOCS(wave_no);
 count = 1;
 % tol = 0.5*max(max(Z)) + (-0.5 +1)*min(min(Z));
 tol = 0.4*max(max(Z)) + (-0.4 +1)*min(min(Z)); % For Goldbeter
+% tol = 0.8*max(max(Z)) + (-0.8 +1)*min(min(Z)); % For Toy2
 % Follow wave if for loop
 for ii = idx_xstart-1: -1: 1
     % Find the next peaks

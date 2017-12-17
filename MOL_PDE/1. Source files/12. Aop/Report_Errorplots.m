@@ -5,7 +5,7 @@
 clear; clc; close all
 dirs.this_file = 'C:\Temp\Diffusion\MOL_PDE\1. Source files\12. Aop';
 % dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Stability';
-dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Stability\Dupont';
+dirs.save_file = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\Archive_PreThesis\Stability\Dupont';
 
 cd(dirs.save_file)
 load('Actual_Depths')

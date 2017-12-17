@@ -43,7 +43,6 @@ mybeta = x';
 %% Inital Conditions dont change
 Diff_type = 1; D_Array =0:10e-6/4:10e-6;
 M = length(x); 
-N = length(t); 
 mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
 tspan = [t0:dt: t1];

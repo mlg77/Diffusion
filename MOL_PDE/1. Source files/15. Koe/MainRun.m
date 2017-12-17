@@ -1,7 +1,7 @@
 clear; clc; close all
 
 %% Inital Conditions to eaisly change
-t0 = 0;   t1 = 1500; dt = 0.01;
+t0 = 0;   t1 = 4000; dt = 0.02;
 tspan = [t0:dt: t1];
 t = tspan;
 dx = 1e-3;  
@@ -77,16 +77,21 @@ plot(mybeta, BifuMin.Z, 'b')
 xlabel('Beta, \beta')
 ylabel('Concentration [\mu M]')
 
+point_care = 0.2;
 for ii = 1:length(mybeta)
-    xdft = fft(Sol.Z(ii, floor(length(t)/2):end)); idx = max(abs(xdft));
-    T(ii) = length(Sol.Z(ii, floor(length(t)/2):end))*(t(2)-t(1))/(idx-1);
+    xx = Sol.Z(ii, floor(length(t)*point_care):end);
+    xdft = fft(xx); 
+    [maxval,idx] = max(abs(xdft));
+    if idx == 1; [maxval,idx] = max(abs(xdft(2:end))); idx = idx+1; end
+    T(ii) = length(xx)*(dt)/(idx-1);
 end
 TVector = T;
 TVector(1:170) = 0;
 TVector(854:end) = 0;
+TVector([700, 727, 743, 755,762,767,779,784,797,805,826]) = nan; 
 
 figure(9)
-plot(mybeta, TVector)
+plot(mybeta, smooth(TVector))
 xlabel('Beta, \beta')
 ylabel('Period [s]')
 

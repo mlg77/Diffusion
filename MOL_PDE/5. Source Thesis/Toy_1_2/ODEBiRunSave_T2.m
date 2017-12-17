@@ -35,7 +35,7 @@ cd(dir_source);
 
 
 %% Inital Conditions to eaisly change
-t0 = 0;   t1 = 2000; dt = 0.01;
+t0 = 0;   t1 = 4000; dt = 0.01;
 dx = 1e-3;  
 t = t0:dt:t1;
 x = (0:dx:1);   
@@ -53,9 +53,9 @@ tspan = [t0:dt: t1];
 %% Run Simulation
     X_0 = -1.2; Y_0 = 0.1; 
 	y0 = [x*0+X_0, x*0+Y_0];
-    display(['Toy`1'])
+    display(['Toy`2'])
     tic
-    [t, y0D] = ode45(@(t,y) odefun_Toy1(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
+    [t, y0D] = ode45(@(t,y) odefun_Toy2(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
 		
     runtime = toc;
     Sol.Z0D = y0D(:, 1:M)';
@@ -75,12 +75,12 @@ tspan = [t0:dt: t1];
     
     
     cd([dir_save']) 
-    mybeta = mybeta + 0.5;
+    mybeta = mybeta*0.2+0.1;
 
 %% Things to save
 % Sol, t, s, mybeta, BifuMax, BifuMin, TVector, pointsfound
 Z = Sol.Z0D; Y = Sol.Y0D;
-save('Toy1_DataBi', 'Z','Y', 't', 'x', 'mybeta', 'BifuMax', 'BifuMin', 'TVector', 'pointsfound', 'runtime')
+save('Toy2_DataBi', 'Z','Y', 't', 'x', 'mybeta', 'BifuMax', 'BifuMin', 'TVector', 'pointsfound', 'runtime')
 
 %% Make Plots
 The6_xpoints = [0.1,0.2,0.4,0.6,0.8,0.9];
@@ -124,7 +124,7 @@ ylabel(hAx(2),'Period [s]') % right y-axis
 
 NumberOfFig = 10;
 for ii = 1:NumberOfFig
-    savefig(ii, ['Toy1_', num2str(ii), 'BiDataFigs.fig'])
+    savefig(ii, ['Toy2_', num2str(ii), 'BiDataFigs.fig'])
 end
 
 cd([dir_save, '\Images']) 
@@ -137,7 +137,7 @@ figure(7); %axis([0,300,-1,3]);
 for i = 1:10
 figure(i)
 set(gcf,'PaperPositionMode','auto')
-print(['Toy1_',num2str(i), '_BiDataFigs'],'-dpng', '-r300')
+print(['Toy2_',num2str(i), '_BiDataFigs'],'-dpng', '-r300')
 end
 
  figure();
@@ -147,27 +147,27 @@ end
 		ylabel('Position, x')
 		colormap jet
 		hold on
-        axis([0,300,0,1])
+        axis([0,1000,0,1])
         colorbar
-        plot([0,300], [0.5,0.5], 'k', 'linewidth', 2)
+        plot([0,1000], [0.5,0.5], 'k', 'linewidth', 2)
 
 set(gcf,'PaperPositionMode','auto')
-print('Toy1_ZeroD','-dpng', '-r300')
+print('Toy2_ZeroD','-dpng', '-r300')
 
 cd(dir_parent);
 %% Now fd
 cd(dir_source);
 %% Inital Conditions to eaisly change
-mybeta = mybeta - 0.5;
-t0 = 0;   t1 = 300; dt = 0.01;
+mybeta = (mybeta-0.1)/0.2;
+t0 = 0;   t1 = 1000; dt = 0.01;
 t = t0:dt:t1;
 tspan = [t0:dt: t1];
 Diff_type = 1; D =6e-6;
 X_0 = -1.2; Y_0 = 0.1; 
 y0 = [x*0+X_0, x*0+Y_0];
-display(['Toy`1'])
+display(['Toy`2'])
 tic
-[t, y0D] = ode45(@(t,y) odefun_Toy1(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
+[t, y0D] = ode45(@(t,y) odefun_Toy2(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
 runtime = toc;
 ZFD = y0D(:, 1:M)';
 YFD = y0D(:, M+1:2*M)';
@@ -179,13 +179,13 @@ figure();
 		ylabel('Position, x')
 		colormap jet
 		hold on
-        axis([0,300,0,1])
+        axis([0,1000,0,1])
         colorbar
-        plot([0,300], [0.5,0.5], 'k', 'linewidth', 2)
+        plot([0,1000], [0.5,0.5], 'k', 'linewidth', 2)
 
 cd([dir_save']) 
 set(gcf,'PaperPositionMode','auto')
-print('Toy1_FD','-dpng', '-r300')
+print('Toy2_FD','-dpng', '-r300')
 
 
 cd(dir_parent);

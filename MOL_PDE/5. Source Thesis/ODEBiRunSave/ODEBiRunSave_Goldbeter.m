@@ -41,10 +41,10 @@ mybeta = x';
 %% Inital Conditions dont change
 Diff_type = 1; D =0;
 M = length(x); 
-N = length(t); 
 mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
 tspan = [t0:dt: t1];
+N = length(tspan); 
 
 %% Run Simulation
 run_model = 'G';
@@ -119,28 +119,25 @@ xlabel('Beta, \beta')
 ylabel(hAx(1),'Concentration [\mu M]') % left y-axis 
 ylabel(hAx(2),'Period [s]') % right y-axis
 
-NumberOfFig = 10;
+figure(11)
+hold on;
+plot(mybeta, BifuMax.Y, 'b')
+plot(mybeta, BifuMin.Y, 'b')
+xlabel('Beta, \beta')
+ylabel('Concentration [\mu M]')
+
+NumberOfFig = 11;
 for ii = 1:NumberOfFig
     savefig(ii, [num2str(ii), 'BiDataFigs.fig'])
 end
 
+cd([dir_save, '\2. Goldbeter\Images']) 
 
-
-
-
-figure(99)
-hold on;
-plot(mybeta, BifuMax.V, 'b')
-plot(mybeta, BifuMin.V, 'b')
-xlabel('Beta, \beta')
-ylabel('Membrane Potential [mV]')
-
-
+for i = 1:NumberOfFig
+figure(i)
 set(gcf,'PaperPositionMode','auto')
-print([num2str(12), '_BiDataFigs'],'-dpng', '-r300')
-
-cd([dir_save, '\1. Dupont']) 
-savefig(99, [num2str(12), 'BiDataFigs.fig'])
+print([num2str(i), '_BiDataFigs'],'-dpng', '-r300')
+end
 
 
 cd(dir_parent);

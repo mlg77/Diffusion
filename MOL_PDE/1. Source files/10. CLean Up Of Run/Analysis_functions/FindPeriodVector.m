@@ -4,9 +4,10 @@ function [ TVector ] = FindPeriodVector( Z, dt )
 M = size(Z, 1);
 N = size(Z, 2);
 
+per_vect = 0.8; % was 0.5
 for ii = 1:M
-    [PKS,LOCS]= findpeaks(Z(ii,floor(N*0.5):end));
-    [Trof,L]= findpeaks(-Z(ii,floor(N*0.5):end));
+    [PKS,LOCS]= findpeaks(Z(ii,floor(N*per_vect):end));
+    [Trof,L]= findpeaks(-Z(ii,floor(N*per_vect):end));
     if length(LOCS) < 6
         TVector(ii) = 0;
     elseif max(PKS) - min(-Trof) < 0.01*max(max(Z))
