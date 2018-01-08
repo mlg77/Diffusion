@@ -59,10 +59,11 @@ end
     Z_0 = 0.5; V_0 = -40; Y_0 = 0.5;
 	y0 = [x*0+Z_0, x*0+V_0, x*0+Y_0];
 elseif strcmp(mystr, 'E') % Ernmentrout
-	t0 = 0;   t1 = 80; dt = 0.01;
-	dx = 1e-3;  
+	t0 = 0;   t1 = 50; dt = 0.005;
+	dx = 5e-4;  
 	x = 0:dx:1;   
-    mybeta = (x*0.3 +0.2)';
+    mybeta = x';
+    %mybeta = (x*0.3 +0.2)';
 %     mybeta = (x*0.1966 +0.2)'; Half?
 % 	mybeta = (0.5*(1+tanh((x-0.5)/0.5)))';
 	Z_0 = 300; V_0 = -40; N_0 = 0.5;
@@ -120,6 +121,10 @@ elseif strcmp(mystr, 'D') %Dupont
 	% start_fixed_beta = find(x== 0.162);
 	% fixed_beta = mybeta(start_fixed_beta);
 	% mybeta(find(x== 0.156):start_fixed_beta) = fixed_beta;
+%     mybeta = x';
+%     idx_lb = find(x >= 0.395, 1);
+%     mybeta(1:idx_lb) = linspace(0, 0.25, idx_lb);
+%     
 	Z_0 = 0.5; A_0 = 0.1; Y_0 = 0.5;
 	y0 = [x*0+Z_0, x*0+A_0, x*0+Y_0];
 

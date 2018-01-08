@@ -1,7 +1,7 @@
 clear; clc; close all
 
 %% Inital Conditions to eaisly change
-t0 = 0;   t1 = 4000; dt = 0.02;
+t0 = 0;   t1 = 3000; dt = 0.02;
 tspan = [t0:dt: t1];
 t = tspan;
 dx = 1e-3;  
@@ -30,6 +30,15 @@ tspan = [t0:dt: t1];
     Sol.N0 = y0D(:, 3*M+1:4*M)';
     Sol.I = y0D(:, 4*M+1:5*M)';
     
+    Z = y0D(:, 1:M)';
+    Y = y0D(:, M+1:2*M)';
+    V = y0D(:, 2*M+1:3*M)';
+    N0 = y0D(:, 3*M+1:4*M)';
+    I = y0D(:, 4*M+1:5*M)';
+    
+    cd('C:\Temp\Diffusion\MOL_PDE\4. Output files\1. ODE_Bifurcations\5. Koe')
+    save('DataBi.mat', 'Z', 'Y', 'V', 'N0', 'I', 'mybeta', 't')
+    return
     per_end = 0.5;
     
     BifuMax.Z = max(Sol.Z(:, floor(N*per_end):end)')';

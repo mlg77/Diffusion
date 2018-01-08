@@ -104,8 +104,8 @@ for ii = 1:numModels
 		Ernmentrout.Z0D = y0D(:, 1:M)';
 		Ernmentrout.V0D = y0D(:, M+1:2*M)';
 		Ernmentrout.N0D = y0D(:, 2*M+1:3*M)';
-		
-		Diff_type = 1; D = 60e-6;%  0;%
+ 		
+		Diff_type = 1; D = 5e-6; %60e-6;%  0;%
 		display(['Diffusion = ', num2str(D)])
 		[t, yFD] = ode45(@(t,y) odefun_Erm(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
 		Ernmentrout.ZFD = yFD(:, 1:M)';
