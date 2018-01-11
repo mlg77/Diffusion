@@ -43,7 +43,7 @@ cd(dir_pars)
 load('Gold_Par')
 
 rough_t_1 = [2, 2]; % Gold
-colours_match = {'g', 'r', 'c', 'm'};
+colours_match = {'r', 'c', 'm'};
 myerror = [];
 
 
@@ -85,9 +85,21 @@ figure(ii)
 axis([0,P(end),0,1])
 rectangle('Position',[0,0.5,P(end),0.5],'FaceColor',[0.6627 0.6627 0.6627])
 rectangle('Position',[0,x(bis_idx(2)),P(end),x(bis_idx(1)) - x(bis_idx(2))],'FaceColor',[0.6627 0.6627 0.6627])
+axis([0,0.35, 0,1])
 
 figure(99)
-imagesc(Z0D)
+    imagesc(t,flipud(x),Z0D)
+        set(gca,'YDir','normal')
+		xlabel('Time, [s]')
+		ylabel('Position, x')
+		colormap jet
+		hold on
+        colorbar
+        axis([0,20,0,1])
+        plot([0,20], 0.5*[1,1], 'k', 'linewidth', 2)
+        plot([0,20], x(bis_idx(2))*[1,1], 'k', 'linewidth', 2)
+        plot([0,20], x(bis_idx(1))*[1,1], 'k', 'linewidth', 2)
+        
 
 cd(dir_parent)
 return

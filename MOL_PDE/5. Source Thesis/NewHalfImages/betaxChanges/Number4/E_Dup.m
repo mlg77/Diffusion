@@ -41,7 +41,7 @@ cd(dir_pars)
 load('Dupont_Par')
 
 rough_t_1 = [2, 2]; % Dup
-colours_match = {'g', 'r', 'c', 'm'};
+colours_match = {'r', 'c', 'm'};
 myerror = [];
 
 
