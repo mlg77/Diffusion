@@ -33,7 +33,8 @@ for ii = 1:length(depth_achieved)
     f1_needed(ii) = f1(idx_d);
 end
 
-plot(D_used, f1_needed', 'bx')
+% plot(D_used, f1_needed', 'bx')
+plot(1./D_used, f1_needed', 'bx')
 
 % P = polyfit(log(D_used), f1_needed',1);
 P = polyfit(1./(D_used), f1_needed',1);
@@ -45,7 +46,8 @@ b_1 = P(2)
 
 d_vect =linspace(1,16,50)*1e-7;
 hold on
-plot(d_vect, a_1./d_vect+ b_1, 'r')
+% plot(d_vect, a_1./d_vect+ b_1, 'r')
+plot(1./d_vect, a_1./d_vect+ b_1, 'r')
 xlabel('Diffusion [cm^2s^{-1}]')
 ylabel('f_1')
 
@@ -77,14 +79,16 @@ theata_2 = a_2;
 omega_2 = b_2;
 
 
-figure(); hold on;
+figure(); 
 startc = 1; endc = 1;
 for ii = 2:length(D_wave_Depth_Height_t)
     if D_wave_Depth_Height_t(ii, 2) > D_wave_Depth_Height_t(ii-1, 2)
         endc = endc+1;
     else
-        if ii == 27 || ii == 37 || ii == 70 || ii == 45
-            plot(D_wave_Depth_Height_t(startc:endc, 2), D_wave_Depth_Height_t(startc:endc, 6), 'x')
+        if ii == 27 || ii == 45 || ii == 70 %|| ii == 45
+%             plot(D_wave_Depth_Height_t(startc:endc, 2), D_wave_Depth_Height_t(startc:endc, 6), 'x')
+            semilogx(D_wave_Depth_Height_t(startc:endc, 2), D_wave_Depth_Height_t(startc:endc, 6), 'x')
+            hold on;
         end
         endc = endc+1;
         startc = ii;
@@ -97,14 +101,15 @@ grid on
 
 figure(2)
 iotas = 1:10;
-for ii = D_wave_Depth_Height_t([26, 36,69, 44],1)'
+for ii = D_wave_Depth_Height_t([18, 37,63],1)'
     f1calc = a_1/ii+ b_1+ log(iotas).*log(omega_2.*ii.^theata_2);
 %     f1calc = a_1/ii+ b_1+ log(iotas).*(log(ii).*a_2+ b_2);
-    plot(iotas, f1calc)
+%     plot(iotas, f1calc)
+    semilogx(iotas, f1calc)
 end
 
 axis([1,7, 0.18, 0.34])
-% legend('Required f_1: D = 3 \times 10^{-6}', 'Required f_1: D = 5 \times 10^{-6}', 'Required f_1: D = 7 \times 10^{-6}', 'Calculated f_1: D = 3 \times 10^{-6}', 'Calculated f_1: D = 5 \times 10^{-6}', 'Calculated f_1: D = 7 \times 10^{-6}')
+% legend('Required f_1: D = 3 \times 10^{-6}', 'Required f_1: D = 5 \times 10^{-6}', 'Required f_1: D = 8 \times 10^{-6}', 'Calculated f_1: D = 3 \times 10^{-6}', 'Calculated f_1: D = 5 \times 10^{-6}', 'Calculated f_1: D = 8 \times 10^{-6}')
 xlabel('Iota \iota'); ylabel('f_1')
 grid on
 

@@ -33,7 +33,7 @@ for ii = 1:length(depth_achieved)
     f1_needed(ii) = f1(idx_d);
 end
 
-plot(D_used, f1_needed', 'bx')
+semilogx([D_used(1:10);D_used(12:20)] , [f1_needed(1:10),f1_needed(12:20)]', 'bx')
 
 P = polyfit(log(D_used), f1_needed',1);
 theata_1 = P(1)
@@ -41,7 +41,7 @@ omega_1 = exp(P(2))
 
 d_vect = 1e-5*[0.1:0.001:1];
 hold on
-plot(d_vect, log(omega_1.*d_vect.^theata_1), 'r')
+semilogx(d_vect, log(omega_1.*d_vect.^theata_1), 'r')
 xlabel('Diffusion [cm^2s^{-1}]')
 ylabel('f_1')
 
@@ -65,14 +65,15 @@ P = polyfit(log(D_used), ((requiredf - log(omega_1*D_used.^theata_1))./log(wave_
 theata_2 = P(1)
 omega_2 = exp(P(2))
 
-figure(); hold on;
+figure();
 startc = 1; endc = 1;
 for ii = 2:length(D_wave_Depth_Height_t)
     if D_wave_Depth_Height_t(ii, 2) > D_wave_Depth_Height_t(ii-1, 2)
         endc = endc+1;
     else
         if ii == 31 || ii == 51 || ii == 71 
-            plot(D_wave_Depth_Height_t(startc:endc, 2), D_wave_Depth_Height_t(startc:endc, 6), 'x')
+            semilogx(D_wave_Depth_Height_t(startc:endc, 2), D_wave_Depth_Height_t(startc:endc, 6), 'x')
+             hold on;
         end
         endc = endc+1;
         startc = ii;
@@ -87,7 +88,7 @@ figure(2)
 iotas = 1:10;
 for ii = D_wave_Depth_Height_t([30, 50,70],1)'
     f1calc = log(omega_1.*ii.^theata_1)+ log(iotas).*log(omega_2.*ii.^theata_2);
-    plot(iotas, f1calc)
+    semilogx(iotas, f1calc)
 end
     
 legend('Required f_1: D = 3 \times 10^{-6}', 'Required f_1: D = 5 \times 10^{-6}', 'Required f_1: D = 7 \times 10^{-6}', 'Calculated f_1: D = 3 \times 10^{-6}', 'Calculated f_1: D = 5 \times 10^{-6}', 'Calculated f_1: D = 7 \times 10^{-6}')
