@@ -48,7 +48,7 @@ end
 [D_predicted; Dlist];
 
 figure();
-h = histogram(myerror*(10e-6)/(1e-6));
+h = histogram(myerror); %*(10e-6)/(1e-6));
 xlabel('Percentage Error')
 ylabel('Occurance')
 h.NumBins = 15;
