@@ -12,6 +12,8 @@ if strcmp(mystr, 'G') %Goldbeter
 % 	mybeta = (x*0.56)'; % Used for half bi at 0.5
 %     mybeta(floor(length(x)/2)) = 0;
 	mybeta = x';
+    mybeta(1:floor(length(x)/2)) = 0.2;
+    mybeta(floor(length(x)/2):end) = 0.55;
 
 %% New dbetadx
 typedbetadx = 0;
@@ -56,7 +58,7 @@ elseif typedbetadx == 9
 end
     
 	
-    Z_0 = 0.5; V_0 = -40; Y_0 = 0.5;
+    Z_0 = 0.24; V_0 = -40; Y_0 = 0.5;
 	y0 = [x*0+Z_0, x*0+V_0, x*0+Y_0];
 elseif strcmp(mystr, 'E') % Ernmentrout
 	t0 = 0;   t1 = 50; dt = 0.005;

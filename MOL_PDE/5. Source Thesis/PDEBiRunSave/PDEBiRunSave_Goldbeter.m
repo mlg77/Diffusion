@@ -34,7 +34,7 @@ cd(dir_source);
 
 
 %% Inital Conditions to eaisly change
-t0 = 0;   t1 = 100; dt = 0.001;
+t0 = 0;   t1 = 50; dt = 0.01;
 dx = 1e-3;  
 x = 0:dx:1;    
 mybeta = x';
@@ -60,7 +60,7 @@ tspan = [t0:dt: t1];
     Y0D = y0D(:, 2*M+1:3*M)';
 
     cd([dir_save, '\2. Goldbeter']) 
-    save('DataPDE', 'Z0D','Y0D', 'V0D', 't', 'x', 'mybeta', 'runtime')
+    %save('DataPDE', 'Z0D','Y0D', 'V0D', 't', 'x', 'mybeta', 'runtime')
     
     figure();
     imagesc(t,flipud(x),Z0D)
@@ -85,7 +85,7 @@ for ii = 1:4
     Y = y0D(:, 2*M+1:3*M)';
 
     cd([dir_save, '\2. Goldbeter']) 
-    save(['DataPDE', num2str(ii)], 'Z','Y', 'V', 't', 'x', 'mybeta', 'runtime', 'D')
+    %save(['DataPDE', num2str(ii)], 'Z','Y', 'V', 't', 'x', 'mybeta', 'runtime', 'D')
     
     figure();
     imagesc(t,flipud(x),Z)

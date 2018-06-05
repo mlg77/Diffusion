@@ -1,6 +1,7 @@
-function [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Dupont( t, y , mybeta, Diff_type, D)
+function [ dydt , L_Z, L_Y, d2Zdx2, d2Zdxfd, v_2, v_3] = odefun_Dupont( t, y , mybeta, Diff_type, D)
 %Ode function for goldbeter Explicit
 %   uses known values for dc/dx 
+% [ dydt , L_Z, L_Y, d2Zdx2, v_2, v_3] = odefun_Dupont( t, y , mybeta, Diff_type, D)
 
 if length(mybeta) ~= 1 && length(mybeta)*4 ~= length(y)
     mybeta = mybeta(1);
@@ -35,6 +36,7 @@ dx = 1/(M-1);
 if Diff_type == 1
     d2Zdx2 = D/dx^2*(-2*Z + [Z(2:end); 0] + [0; Z(1:end-1)]);
 elseif Diff_type == 2
+    d2Zdxfd = D/dx^2*(-2*Z + [Z(2:end); 0] + [0; Z(1:end-1)]);
     term1 = (-2*Z + [Z(2:end); 0] + [0; Z(1:end-1)]);
     term2 = (my_gamma./4).*([0; Z(3:end); 0] - [0; Z(1:end-2);0]).*([0;V(3:end); 0] - [0; V(1:end-2);0]);
     term3 =  my_gamma*Z.*(-2*V + [V(2:end); 0] + [0; V(1:end-1)]);

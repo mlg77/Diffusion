@@ -82,7 +82,7 @@ for ii = 1:numModels
             Goldbeter.Y0D = y0D(:, 2*M+1:3*M)';
         end
         
-		Diff_type = 1; D = 6e-6;
+		Diff_type = 1; D = 800e-6;%D = 6e-6;
 		display(['Diffusion = ', num2str(D)])
         tic
 		[t, yFD] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions);
