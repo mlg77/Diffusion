@@ -71,7 +71,7 @@ tspan = [t0:dt: t1];
 		colormap jet
 		hold on
  
-for ii = 1:4
+for ii = 1% 1:4
     cd(dir_source);
 	Z_0 = 0.5; V_0 = -40; Y_0 = 0.5;
 	y0 = [x*0+Z_0, x*0+V_0, x*0+Y_0];
@@ -85,7 +85,7 @@ for ii = 1:4
     Y = y0D(:, 2*M+1:3*M)';
 
     cd([dir_save, '\2. Goldbeter']) 
-    %save(['DataPDE', num2str(ii)], 'Z','Y', 'V', 't', 'x', 'mybeta', 'runtime', 'D')
+    save(['DataPDE', num2str(ii)], 'Z','Y', 'V', 't', 'x', 'mybeta', 'runtime', 'D')
     
     figure();
     imagesc(t,flipud(x),Z)

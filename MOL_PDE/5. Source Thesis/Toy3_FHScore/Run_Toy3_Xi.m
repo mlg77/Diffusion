@@ -209,6 +209,77 @@ for ii = [1,5,12,19]% 1:length(myXi_vector)
     end
 end
 
+return
+%% Figs paper 
+% Want bifurcation and period overlayed
+% Want wave shape 
+% Want diffusion up to 
+count = 0;
+cd([dir_save]) 
+for ii = 10% [1,5,12,19]% 1:length(myXi_vector)
+    myXi = myXi_vector(ii);
+    mybeta = (x*0.7+0.1)';
+    for jj = 1:length(D_Array)
+        D = D_Array(jj);
+        load(['Data_', num2str(ii), '_', num2str(jj)])
+        if jj ==1
+            per_end = 0.5;
+            BifuMax = max(Z(:, floor(N*per_end):end)')';
+            BifuMin = min(Z(:, floor(N*per_end):end)')';
+        
+            cd(['C:\Temp\Diffusion\MOL_PDE\1. Source files\10. CLean Up Of Run\Analysis_functions']);
+            [ pointsfound ] = Bifurcation_pointsToy( x,t,Z );
+            [ TVector ] = FindPeriodVector( Z ,dt) ;
+            cd([dir_save]) 
+
+            count = count+1;
+            figure(count);
+            [hAx,hLine1,hLine2]  = plotyy([mybeta; nan; mybeta], [BifuMax;nan; BifuMin], mybeta, TVector);
+            xlabel('Beta, \beta')
+            ylabel(hAx(1),'Variable \Phi') % left y-axis 
+            ylabel(hAx(2),'Period [s]') % right y-axis
+            
+            count = count+1;
+            figure(count); hold on
+            idx_wave = pointsfound(1)+31;
+            Zp = Z(idx_wave, floor(length(t)/2):end);
+            tp = t(floor(length(t)/2):end);
+            [Troughs,LOCS] = findpeaks(-Zp);
+            Zp = Zp(LOCS(2):LOCS(3)); 
+            tp = tp(LOCS(2):LOCS(3));
+            periodT = tp(end)-tp(1);
+            plot(tp - 0.1*periodT, Zp, ':k', 'linewidth', 2)
+            plot(tp + 0.1*periodT, Zp, ':b', 'linewidth', 2)
+            plot(tp, Zp, 'r', 'linewidth', 3)
+            
+            figure(99+count); hold on
+            Zp = Zp +3;
+            [mymax,Imax] = max(Zp);
+            Idxcol = find(Zp > (max(Zp)+min(Zp))/2, 1, 'last');
+            h1 = area(tp(Imax*2 - Idxcol:Imax),Zp(Imax*2 - Idxcol:Imax))
+            h1(1).FaceColor = [1 0 0];
+            h2 = area(tp(Imax:Idxcol),Zp(Imax:Idxcol))
+            h2(1).FaceColor = [0 0 1];
+            plot([1,1]*tp(Imax), [min(Zp), max(Zp)], 'k')
+            plot(tp, Zp, 'k', 'linewidth', 3)
+        %     plot([t(1), t(Idxcol)], [1,1]*(max(Z)+min(Z))/2, 'k')
+            plot([1,1]*tp(Idxcol), [min(Zp), Zp(Idxcol)], 'k' )
+            plot([t(1),tp(end)], [1,1]*min(Zp), 'k' )
+            plot([1,1]*(tp(Imax*2 - Idxcol)), [min(Zp), Zp(Imax*2 - Idxcol)], 'k' )
+            axis([min(tp)*0.99,max(tp)*1.01 , min(Zp)*0.99,max(Zp)*1.01 ])
+        else
+            count = count+1;
+            figure(count);
+            imagesc(t,flipud(x),Z)
+            axis([0,700,0,1])
+            set(gca,'YDir','normal')
+            xlabel('Time, [s]')
+            ylabel('Position, x')
+            colormap jet
+            hold on; plot([0,t(end)], pointsfound(2)*[1,1],'k', 'linewidth', 2)
+        end
+    end
+end
 
 return
 

@@ -4,7 +4,7 @@
 clear; clc; close all
 
 %% Move to correct directory
-dir_source = 'C:\Temp\Diffusion\MOL_PDE\1. Source files\10. CLean Up Of Run\Dupontround2';
+dir_source = 'C:\Temp\Diffusion\MOL_PDE\1. Source files\10. CLean Up Of Run';
 dir_parent = 'C:\Temp\Diffusion\MOL_PDE\5. Source Thesis\Defense';
 dir_save = 'C:\Temp\Diffusion\MOL_PDE\4. Output files\13. Defense';
 
@@ -30,12 +30,16 @@ N = length(t);
 mtol = 1e-6;
 odeoptions = odeset('RelTol',mtol, 'AbsTol', mtol );
 
-Z_0 = 0.5; A_0 = 0.1; Y_0 = 0.5; V_0 = -40;
-y0 = [x*0+Z_0, x*0+A_0, x*0+Y_0, x*0+V_0];
-    
+% Z_0 = 0.5; A_0 = 0.1; Y_0 = 0.5; V_0 = -40;
+% y0 = [x*0+Z_0, x*0+A_0, x*0+Y_0, x*0+V_0];
+Z_0 = 0.5; Y_0 = 0.5; V_0 = -40;
+y0 = [x*0+Z_0, x*0+V_0 , x*0+Y_0];
+     
 
 timesteps = [0:400:4000];
 % timesteps = [0:20:60];
+run_time =1;
+if run_time 
 for ii = 2:length(timesteps)
     
     t0 = timesteps(ii-1);   t1 = timesteps(ii); dt = 0.01;
@@ -51,16 +55,17 @@ for ii = 2:length(timesteps)
     end
     
     
-    display(['Dupont D = ', num2str(D)])
+    display(['Gold D = ', num2str(D)])
     cd(dir_source)
-    [t, y0D] = ode45(@(t,y) odefun_Dupont(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions); 
+    [t, y0D] = ode45(@(t,y) odefun_Goldbeter(t,y,mybeta,Diff_type, D), tspan, y0, odeoptions); 
 
     Z0D = y0D(:, 1:M)';
 
     cd([dir_save]) 
     count  = count + 1
-    save(['Dup_Long_', num2str(ii)], 'Z0D', 't', 'x', 'mybeta', 'D')
+    save(['Gold_Long_', num2str(ii)], 'Z0D', 't', 'x', 'mybeta', 'D')
         
+end
 end
 
 display('Yay')
@@ -72,7 +77,7 @@ for ii = 2:length(timesteps)
     M = length(x); 
     N = length(t); 
         
-    load(['Dup_Long_', num2str(ii)])
+    load(['Gold_Long_', num2str(ii)])
     Z(1:M, count: count+length(t)-1) = Z0D;
     tt(1, count: count+length(t)-1) = t;
     count = count + length(t);
@@ -93,9 +98,14 @@ max_z = [];
 min_z = [];
 for ii = 1:M
 
-    max_z(ii) = max(Z(ii, 100:end));
-    min_z(ii) = min(Z(ii, 100:end));
+    max_z(ii) = max(Z(ii, 500:end));
+    min_z(ii) = min(Z(ii, 500:end));
 end
 figure(); hold on;
 plot(mybeta, max_z, 'b')
 plot(mybeta, min_z, 'b')
+n = 10;
+[SHORT,LONG] = movavg(max_z,n,n,0);
+[SHORT2,LONG2] = movavg(min_z,n,n,0);
+plot(mybeta(5:end-5), SHORT(10:end), 'r')
+plot(mybeta(5:end-5), SHORT2(10:end), 'r')

@@ -88,13 +88,31 @@ for ii = 1:8
     periodT = t(end)-t(1);
     
     figure(); hold on
-    plot(t - perp(ii)*periodT, Z, ':k', 'linewidth', 2)
-    plot(t + perp(ii)*periodT, Z, ':b', 'linewidth', 2)
-    plot(t, Z, 'r', 'linewidth', 3)
+%     plot(t - perp(ii)*periodT, Z, ':k', 'linewidth', 2)
+%     plot(t + perp(ii)*periodT, Z, ':b', 'linewidth', 2)
+%     plot(t, Z, 'k', 'linewidth', 3)
+    
+    % Plot area paper
+    Z = Z +3;
+    [mymax,Imax] = max(Z);
+    Idxcol = find(Z > (max(Z)+min(Z))/2, 1, 'last');
+    h1 = area(t(Imax*2 - Idxcol:Imax),Z(Imax*2 - Idxcol:Imax))
+    h1(1).FaceColor = [1 0 0];
+    h2 = area(t(Imax:Idxcol),Z(Imax:Idxcol))
+    h2(1).FaceColor = [0 0 1];
+    plot([1,1]*t(Imax), [min(Z), max(Z)], 'k')
+    plot(t, Z, 'k', 'linewidth', 3)
+%     plot([t(1), t(Idxcol)], [1,1]*(max(Z)+min(Z))/2, 'k')
+    plot([1,1]*t(Idxcol), [min(Z), Z(Idxcol)], 'k' )
+    plot([t(1),t(end)], [1,1]*min(Z), 'k' )
+    plot([1,1]*(t(Imax*2 - Idxcol)), [min(Z), Z(Imax*2 - Idxcol)], 'k' )
+    
+    
     title(num2str(ii))
     
     if myaxis(ii,1:4) == [0,0,0,0]
     else
+        myaxis(ii, 3:4) = myaxis(ii, 3:4) +3;
         axis(myaxis(ii,1:4))
     end
     

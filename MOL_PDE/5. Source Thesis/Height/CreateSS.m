@@ -7,3 +7,6 @@ dir_parent = 'C:\Temp\Diffusion\MOL_PDE\5. Source Thesis\Height';
 
 % Then create a function to load this vector and take E and P to give back
 % a height
+
+
+
